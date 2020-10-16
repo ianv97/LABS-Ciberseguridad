@@ -156,6 +156,22 @@ El escenario bloquea la IP cuando se producen 3 intentos fallidos de inicio de s
 - Username: carlos
 - Password: george
 
+### [Username enumeration via account lock](https://portswigger.net/web-security/authentication/password-based/lab-username-enumeration-via-account-lock)
+
+#### Descripción:
+
+En este caso una cuenta existente se bloquea luego de 5 intentos de acceso fallidos. Esto se puede utilizar para obtener un usuario válido:
+
+1. Utilizar el ataque "Cluster bomb" para realizar 5 intentos de acceso a cada usuario de la lista.
+2. Observar la longitud de la respuesta para identificar aquél con el mensaje de error distinto, avisando que la cuenta ha sido bloqueada.
+
+Con el usuario identificado, realizar un ataque de fuerza bruta sobre la contraseña. Al intentar acceder con la contraseña correcta a una cuenta bloqueada, existe un bug lógico por el cual el error de que la cuenta está bloqueada no se muestra, por lo que se puede identificar dicha contraseña y, una vez pasado el tiempo de bloqueo, acceder a la cuenta.
+
+#### Solución encontrada:
+
+- Username: accounts
+- Password: 11111111
+
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
