@@ -195,6 +195,22 @@ Al ingresar un usuario y contraseña correctos, el sistema ya inicia la sesión,
 
 Ingresar con las credenciales de la víctima (carlos:montoya) y cuando el código de verificación sea solicitado, reemplazar manualmente la url por /my-account
 
+### [2FA broken logic](https://portswigger.net/web-security/authentication/multi-factor/lab-2fa-broken-logic)
+
+#### Descripción:
+
+Existe un error lógico por el cual se puede ingresar a una cuenta conociendo su usuario y código de verificación, sin ingresar su contraseña. Esto se debe a que la sesión se inicia al ingresar un código de verificación correcto asociado al usuario con el que teóricamente se ingresó. Sin embargo, se puede modificar el usuario en la request, por lo que es vulnerable a:
+
+1. Ingresar con las credenciales brindadas (wiener:peter).
+2. Ingresar un código de verificación cualquiera.
+3. Modificar la solicitud de generación del código de verificación (realizada automáticamente en el paso 1), reemplazando nuestro usuario por el usuario objetivo (carlos).
+4. Modificar la solicitud en la que se envía el código de verificación (paso 2), reemplazando nuestro usuario por el usuario objetivo.
+5. Realizar un ataque de fuerza bruta sobre el código de verificación del usuario objetivo, siendo este un código numérico de 4 dígitos.
+
+#### Solución encontrada:
+
+- Código de verificación: 0068
+
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
