@@ -324,14 +324,35 @@ La funcionalidad de cambio de contraseña especifica en la request el usuario qu
 
 ### [Excessive trust in client-side controls](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-excessive-trust-in-client-side-controls)
 
+#### Descripción:
+
+Al añadir un producto al carrito de compras, el precio del mismo se especifica en la request, por lo que puede ser modificado.
+
 #### Solución:
 
 1. Iniciar sesión con las credenciales proporcionadas (wiener:peter)
 2. Ver los detalles de Lightweight "l33t" Leather Jacket
 3. Activar la intercepción en Burp proxy
 4. Añadir al carrito el producto
-5. Modificar el parámetro price por un valor entero (por ejemplo 1 centavo)
+5. En la request interceptada, modificar el parámetro price por un valor entero (por ejemplo 1 centavo)
 6. Completar la orden
+
+### [High-level logic vulnerability](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-high-level)
+
+#### Descripción:
+
+Al añadir un producto al carrito de compras, la cantidad añadida se especifica en la request, por lo que puede ser modificada, y no se controla que la cantidad sea positiva, por lo que se puede especificar una cantidad negativa de un producto para conseguir un descuento en la compra de otros productos.
+
+#### Solución:
+
+1. Iniciar sesión con las credenciales proporcionadas (wiener:peter)
+2. Ver los detalles de algún producto que no sea Lightweight "l33t" Leather Jacket
+3. Activar la intercepción en Burp proxy
+4. Añadir al carrito el producto
+5. En la request interceptada, modificar el parámetro cantidad por un valor negativo
+6. Añadir al carrito el producto Lightweight "l33t" Leather Jacket
+7. En el checkout ajustar la cantidad negativa del otro producto de manera que el costo total sea > $0 (ya que esto sí es controlado, por lo que se obtiene un error) y < $100 (crédito en la tienda)
+8. Completar la orden
 
 ---
 
