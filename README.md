@@ -231,6 +231,17 @@ Existe una protección contra ataques de fuerza bruta que bloquea los inicios de
 
 - Cookie stay-logged-in: Y2FybG9zOjIxYjcyYzBiN2FkYzVjN2I0YTUwZmZjYjkwZDkyZGQ2 (que corresponde a carlos:matrix)
 
+### [Offline password cracking](https://portswigger.net/web-security/authentication/other-mechanisms/lab-offline-password-cracking)
+
+#### Descripción:
+
+Se utiliza la misma cookie del laboratorio anterior para guardar la sesión y, además, el blog es vulnerable a un XSS en los comentarios de los post. Por lo tanto, se puede hacer una solicitud al exploit server del laboratorio con el valor de la cookie del usuario. Una vez que el usuario ingresa al post, se ejecuta el script que envía su cookie de stay-logged-in, por lo que solo resta revisar las solicitudes recibidas en el exploit server y decodificar la cookie (y desencriptar la contraseña que se encuentra en MD5) para obtener sus credenciales.
+
+#### Solución:
+
+- Username: carlos
+- Password: onceuponatime
+
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
