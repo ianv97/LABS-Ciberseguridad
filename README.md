@@ -354,6 +354,24 @@ Al añadir un producto al carrito de compras, la cantidad añadida se especifica
 7. En el checkout ajustar la cantidad negativa del otro producto de manera que el costo total sea > $0 (ya que esto sí es controlado, por lo que se obtiene un error) y < $100 (crédito en la tienda)
 8. Completar la orden
 
+### [Low-level logic flaw](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-low-level)
+
+#### Descripción:
+
+Se pueden pedir hasta 99 unidades de cada producto por vez, pero esto se puede realizar múltiples veces dentro de una misma compra. Esto se puede aprovechar para desbordar la variable que almacena el precio total de la compra, cuyo máximo valor es 21.474.836,47.
+
+- Precio a sumar = 21.474.836 \* 2 = 42.949.672 (desde 0 a 21.474.836 y desde -21.474.836 a 0)
+- Costo de cada orden = 1.337 \* 99 = 132.363
+- Cantidad de órdenes de 99 Lightweight "l33t" Leather Jacket = 42.949.672 / 132.363 = 324,48
+
+#### Solución:
+
+1. Iniciar sesión con las credenciales proporcionadas (wiener:peter)
+2. Añadir 99 Lightweight "l33t" Leather Jacket al carrito
+3. Repetir la request anterior 323 veces. El total de unidades debería ser 32076 y el precio de la orden -\$64.060,96
+4. Añadir otros producto de manera que el precio quede entre $0 y $100 (por ejemplo 47 unidades de Lightweight "l33t" Leather Jacket y 16 unidades de Conversation Controlling Lemon: 47 \* $1337 + 16 \* $80.72 = 64.130,52)
+5. Completar la orden
+
 ---
 
 ## [HTTP Host header attacks](https://portswigger.net/web-security/host-header)
