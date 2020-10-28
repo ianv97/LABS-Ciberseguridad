@@ -116,6 +116,12 @@ Para encontrar la url del panel de administrador, inspeccionar el código de la 
 
 - Dirigirse a https://url_del_laboratorio/admin-gbd53v y eliminar el usuario carlos
 
+### [User role controlled by request parameter](https://portswigger.net/web-security/access-control/lab-user-role-controlled-by-request-parameter)
+
+#### Solución:
+
+Activar en burp proxy la intercepción de las solicitudes, iniciar sesión con las credenciales proporcionadas (wiener:peter), forwardear la request y modificar en la respuesta la cookie Admin seteandola en true, dirigirse al panel de administrador y eliminar el usuario carlos, modificando la cookie en cada solicitud.
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
