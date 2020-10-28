@@ -258,6 +258,17 @@ El link generado para la recuperación de contraseñas utiliza un token para ide
 
 - temp-forgot-password-token: Y9UnwhR8m30gML08KsJi1FAST4aI6aWi
 
+### [Password brute-force via password change](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-brute-force-via-password-change)
+
+#### Descripción:
+
+La funcionalidad de cambio de contraseña especifica en la request el usuario que inició sesión y que quiere cambiar la contraseña (pudiendo por lo tanto modificarlo), pero solicita la contraseña actual que es desconocida. A su vez, como protección contra ataques de fuerza bruta, bloquea la cuenta cuando se ingresa una contraseña actual incorrecta. Sin embargo, si los campos nueva contraseña y repetir nueva contraseña no coinciden, este control no se hace, diferenciando además el mensaje de error cuando la contraseña actual es incorrecta de cuando la contraseña actual es correcta pero las nuevas contraseñas no coinciden, por lo que se puede realizar un ataque de fuerza bruta sobre la misma.
+
+#### Solución encontrada:
+
+- Username: carlos
+- Password: starwars
+
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
