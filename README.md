@@ -211,6 +211,16 @@ Existe un error lógico por el cual se puede ingresar a una cuenta conociendo su
 
 - Código de verificación: 0068
 
+### [2FA bypass using a brute-force attack](https://portswigger.net/web-security/authentication/multi-factor/lab-2fa-bypass-using-a-brute-force-attack)
+
+#### Descripción:
+
+Existe una protección contra ataques de fuerza bruta al código de verificación: si se ingresan 2 códigos de verificación erróneos, el usuario debe volver a autenticarse con su usuario y contraseña. La solución a este problema consiste en establecer una macro en Burp que vuelva a iniciar la sesión del usuario en cada request y luego hacer un ataque por fuerza bruta idéntico al del laboratorio anterior.
+
+#### Solución encontrada:
+
+- Código de verificación: 1041
+
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
