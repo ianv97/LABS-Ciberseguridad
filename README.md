@@ -242,6 +242,12 @@ Se utiliza la misma cookie del laboratorio anterior para guardar la sesión y, a
 - Username: carlos
 - Password: onceuponatime
 
+### [Password reset broken logic](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-reset-broken-logic)
+
+#### Descripción:
+
+En la funcionalidad de recuperación de contraseña, al establecer la nueva contraseña, se envía en la request tanto la nueva contraseña como el usuario correspondiente y no se realiza ningún chequeo sobre el parámetro temp-forgot-password-token, por lo que cualquier usuario puede realizar una solicitud con el nombre de usuario que desee atacar y cambiarle la contraseña, obteniendo acceso a dicha cuenta.
+
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
