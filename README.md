@@ -91,10 +91,30 @@
 
 ### [Unprotected admin functionality](https://portswigger.net/web-security/access-control/lab-unprotected-admin-functionality)
 
+#### Descripción:
+
+Existe un panel de administrador que no se encuentra protegido. Para hallar su url, dirigirse a https://url_del_laboratorio/robots.txt y observar que se inidicó no indexar /administrator-panel
+
 #### Solución:
 
-- Dirigirse a https://url_del_laboratorio/robots.txt y observar que se inidicó no indexar /administrator-panel
 - Dirigirse a https://url_del_laboratorio/administrator-panel y eliminar el usuario carlos
+
+### [Unprotected admin functionality with unpredictable URL](https://portswigger.net/web-security/access-control/lab-unprotected-admin-functionality-with-unpredictable-url)
+
+#### Descripción:
+
+Para encontrar la url del panel de administrador, inspeccionar el código de la página de inicio y buscar el script que indica la url del mismo en:
+
+- &lt;body>
+  - &lt;div theme="ecommerce">
+    - &lt;section class="mainContainer">
+      - &lt;div class="container">
+        - &lt;header class="navigation-header">
+          - &lt;section class="top-links">
+
+#### Solución encontrada:
+
+- Dirigirse a https://url_del_laboratorio/admin-gbd53v y eliminar el usuario carlos
 
 ---
 
