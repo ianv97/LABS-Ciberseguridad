@@ -89,6 +89,13 @@
 
 ## [Access control vulnerabilities](https://portswigger.net/web-security/access-control)
 
+### [Unprotected admin functionality](https://portswigger.net/web-security/access-control/lab-unprotected-admin-functionality)
+
+#### Solución:
+
+- Dirigirse a https://url_del_laboratorio/robots.txt y observar que se inidicó no indexar /administrator-panel
+- Dirigirse a https://url_del_laboratorio/administrator-panel y eliminar el usuario carlos
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
