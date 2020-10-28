@@ -248,6 +248,16 @@ Se utiliza la misma cookie del laboratorio anterior para guardar la sesión y, a
 
 En la funcionalidad de recuperación de contraseña, al establecer la nueva contraseña, se envía en la request tanto la nueva contraseña como el usuario correspondiente y no se realiza ningún chequeo sobre el parámetro temp-forgot-password-token, por lo que cualquier usuario puede realizar una solicitud con el nombre de usuario que desee atacar y cambiarle la contraseña, obteniendo acceso a dicha cuenta.
 
+### [Password reset poisoning via middleware](https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-reset-poisoning-via-middleware)
+
+#### Descripción:
+
+El link generado para la recuperación de contraseñas utiliza un token para identificar al usuario correspondiente al que se le generará la nueva contraseña. Sin embargo, la request en la que se solicita dicho link admite el header X-Forwarded-Host, por lo que se puede solicitar la recuperación de contraseña del usuario objetivo cambiando el header mencionado y enviando así dicha solicitud al exploit server, consiguiendo de esta manera acceso al token del usuario y pudiendo, por lo tanto, establecer la nueva contraseña para dicho usuario.
+
+#### Solución encontrada:
+
+- temp-forgot-password-token: Y9UnwhR8m30gML08KsJi1FAST4aI6aWi
+
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
