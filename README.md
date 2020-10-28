@@ -221,6 +221,16 @@ Existe una protección contra ataques de fuerza bruta al código de verificació
 
 - Código de verificación: 1041
 
+### [Brute-forcing a stay-logged-in cookie](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie)
+
+#### Descripción:
+
+Existe una protección contra ataques de fuerza bruta que bloquea los inicios de sesión una vez que se han producido 5 intentos fallidos. Sin embargo, la funcionalidad para mantener iniciada una sesión se implementa mediante cookies, las cuales guardan el usuario y la contraseña (en MD5) encodeados en base 64. De esta manera, se puede realizar un ataque de fuerza bruta utilizando esta cookie para iniciar sesión.
+
+#### Solución encontrada:
+
+- Cookie stay-logged-in: Y2FybG9zOjIxYjcyYzBiN2FkYzVjN2I0YTUwZmZjYjkwZDkyZGQ2 (que corresponde a carlos:matrix)
+
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
