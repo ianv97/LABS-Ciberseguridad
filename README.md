@@ -322,6 +322,17 @@ La funcionalidad de cambio de contraseña especifica en la request el usuario qu
 
 ## [Business logic vulnerabilities](https://portswigger.net/web-security/logic-flaws)
 
+### [Excessive trust in client-side controls](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-excessive-trust-in-client-side-controls)
+
+#### Solución:
+
+1. Iniciar sesión con las credenciales proporcionadas (wiener:peter)
+2. Ver los detalles de Lightweight "l33t" Leather Jacket
+3. Activar la intercepción en Burp proxy
+4. Añadir al carrito el producto
+5. Modificar el parámetro price por un valor entero (por ejemplo 1 centavo)
+6. Completar la orden
+
 ---
 
 ## [HTTP Host header attacks](https://portswigger.net/web-security/host-header)
