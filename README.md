@@ -376,6 +376,19 @@ https://LABID.web-security-academy.net/product?productId=asd
 
 3jbksebn9ti5zjbmlfzu00z21i8qv3bp
 
+### [Source code disclosure via backup files](https://portswigger.net/web-security/information-disclosure/exploiting/lab-infoleak-via-backup-files)
+
+#### Descripción:
+
+1. Buscar en robots.txt las url no indexadas
+2. Ir a https://LABID.web-security-academy.net/backup
+3. Acceder al archivo ProductTemplate.java.bak
+4. Identificar la contraseña de la base de datos en la cadena de conexión
+
+#### Solución:
+
+75x280c4b39i7byks9ts7przmhnax61p
+
 ---
 
 ## [Business logic vulnerabilities](https://portswigger.net/web-security/logic-flaws)
