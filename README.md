@@ -389,6 +389,14 @@ https://LABID.web-security-academy.net/product?productId=asd
 
 75x280c4b39i7byks9ts7przmhnax61p
 
+### [Authentication bypass via information disclosure](https://portswigger.net/web-security/information-disclosure/exploiting/lab-infoleak-authentication-bypass)
+
+#### Solución:
+
+1. Añadir una regla de reemplazo de headers en el proxy de Burp, ingresando como contenido de reemplazo: X-Custom-IP-Authorization: 127.0.0.1
+2. Acceder a https://LABID.web-security-academy.net/admin
+3. Eliminar la cuenta de Carlos
+
 ---
 
 ## [Business logic vulnerabilities](https://portswigger.net/web-security/logic-flaws)
