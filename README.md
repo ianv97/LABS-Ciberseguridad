@@ -91,6 +91,13 @@
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
 
+### [OS command injection, simple case](https://portswigger.net/web-security/os-command-injection/lab-simple)
+
+#### Solución
+
+1. Consultar el stock de un producto y capturar la request
+2. Setear el parámetro storeId=1|whoami
+
 ---
 
 ## [Server-side template injection](https://portswigger.net/web-security/server-side-template-injection)
