@@ -76,6 +76,13 @@
 1. Consultar el stock de un producto y capturar la request
 2. Setear el parámetro stockApi=http://localhost/admin/delete?username=carlos
 
+### [Basic SSRF against another back-end system](https://portswigger.net/web-security/ssrf/lab-basic-ssrf-against-backend-system)
+
+#### Solución:
+
+1. Consultar el stock de un producto y capturar la request
+2. En Burp Intruder setear el parámetro stockApi=http://192.168.0.$XX$:8080/admin/delete?username=carlos haciendo variar la XX (último octeto de la IP) entre 1 y 255
+
 ---
 
 ## [HTTP request smuggling](https://portswigger.net/web-security/request-smuggling)
