@@ -397,6 +397,20 @@ https://LABID.web-security-academy.net/product?productId=asd
 2. Acceder a https://LABID.web-security-academy.net/admin
 3. Eliminar la cuenta de Carlos
 
+### [Information disclosure in version control history](https://portswigger.net/web-security/information-disclosure/exploiting/lab-infoleak-in-version-control-history)
+
+#### Descripción:
+
+1. Descargar los archivos de https://LABID.web-security-academy.net/.git
+2. En el directorio hacer git log para ver los commits
+3. Hacer git reset 8ec321d3725b8fcf2555675518f9853377ae1ed5 para volver al commit anterior a la eliminación de la contraseña de administrador
+4. Hacer git checkout . para restaurar el archivo admin.conf eliminado y abrirlo para ver la contraseña
+
+#### Solución:
+
+Username: administrator
+Password: b0x8mj81062zzrosml0q
+
 ---
 
 ## [Business logic vulnerabilities](https://portswigger.net/web-security/logic-flaws)
