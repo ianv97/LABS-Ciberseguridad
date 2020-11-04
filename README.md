@@ -361,7 +361,20 @@ La funcionalidad de cambio de contraseña especifica en la request el usuario qu
 Hacer una request de los detalles de un producto, pasando como productId un string:
 https://LABID.web-security-academy.net/product?productId=asd
 
-#### Solución: 2 2.3.31
+#### Solución:
+
+2 2.3.31
+
+### [Information disclosure on debug page](https://portswigger.net/web-security/information-disclosure/exploiting/lab-infoleak-on-debug-page)
+
+#### Descripción:
+
+1. Buscar en los comentarios la url de debug
+2. Hacer una request a https://LABID.web-security-academy.net/cgi-bin/phpinfo.php para obtener la secret key
+
+#### Solución:
+
+3jbksebn9ti5zjbmlfzu00z21i8qv3bp
 
 ---
 
