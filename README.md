@@ -354,6 +354,15 @@ La funcionalidad de cambio de contraseña especifica en la request el usuario qu
 
 ## [Information disclosure](https://portswigger.net/web-security/information-disclosure)
 
+### [Information disclosure in error messages](https://portswigger.net/web-security/information-disclosure/exploiting/lab-infoleak-in-error-messages)
+
+#### Descripción:
+
+Hacer una request de los detalles de un producto, pasando como productId un string:
+https://LABID.web-security-academy.net/product?productId=asd
+
+#### Solución: 2 2.3.31
+
 ---
 
 ## [Business logic vulnerabilities](https://portswigger.net/web-security/logic-flaws)
