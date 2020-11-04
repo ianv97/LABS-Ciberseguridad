@@ -69,6 +69,13 @@
 
 ## [Server-side request forgery (SSRF)](https://portswigger.net/web-security/ssrf)
 
+### [Basic SSRF against the local server](https://portswigger.net/web-security/ssrf/lab-basic-ssrf-against-localhost)
+
+#### Solución:
+
+1. Consultar el stock de un producto y capturar la request
+2. Setear el parámetro stockApi=http://localhost/admin/delete?username=carlos
+
 ---
 
 ## [HTTP request smuggling](https://portswigger.net/web-security/request-smuggling)
