@@ -98,6 +98,13 @@
 1. Consultar el stock de un producto y capturar la request
 2. Setear el parámetro storeId=1|whoami
 
+### [Blind OS command injection with time delays](https://portswigger.net/web-security/os-command-injection/lab-blind-time-delays)
+
+#### Solución
+
+1. Enviar un mensaje de feedback y capturar la request
+2. Setear el parámetro email=||ping+-c+10+127.0.0.1||
+
 ---
 
 ## [Server-side template injection](https://portswigger.net/web-security/server-side-template-injection)
