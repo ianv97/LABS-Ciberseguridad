@@ -406,7 +406,7 @@ https://LABID.web-security-academy.net/product?productId=asd
 3. Hacer git reset 8ec321d3725b8fcf2555675518f9853377ae1ed5 para volver al commit anterior a la eliminación de la contraseña de administrador
 4. Hacer git checkout . para restaurar el archivo admin.conf eliminado y abrirlo para ver la contraseña
 
-#### Solución:
+#### Solución encontrada:
 
 Username: administrator
 Password: b0x8mj81062zzrosml0q
