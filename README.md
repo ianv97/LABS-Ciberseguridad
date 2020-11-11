@@ -44,7 +44,7 @@ GET /filter?category=Accesories'OR+1=1-- HTTP/1.1
 ```
 3. Por último, se envía la request, y el laboratorio estará resuelto.
 
-## [SQL injection vulnerability allowing login bypass](https://portswigger.net/web-security/sql-injection/lab-login-bypass)
+### [SQL injection vulnerability allowing login bypass](https://portswigger.net/web-security/sql-injection/lab-login-bypass)
 
 Cuando el usuario intenta iniciar sesión en el sitio objetivo, suponiendo que las credenciales utilizadas son `usuario` y `contraseña`, se ejecuta la siguiente consulta:
 
@@ -61,6 +61,73 @@ Si no se sanitiza el parámetro del usuario, se puede iniciar sesión con cualqu
 ...
 csrf=[token_csrf]&username=administrator'--&password=ramdom_characters
 ```
+
+### [SQL injection UNION attack, determining the number of columns returned by the query](https://portswigger.net/web-security/sql-injection/union-attacks/lab-determine-number-of-columns)
+
+Cuando una aplicación es vulnerable a una inyección SQL y los resultados de la consulta se envían en la response, se puede usar el comando `UNION` para recuperar datos de varias tablas, usando varias consultas. Para esto se deben cumplir dos condiciones: que las consultas devuelvan el mismo número de columnas, y que los tipos de datos en cada columna sean compatibles entre las consultas individuales.
+
+Para determinar el número de columnas que devuelve una consulta, se puede inyectar `' UNION SELECT NULL--`, concatenando con varios `NULL` hasta que el servidor no devuelva ningún error, indicando que se obtuvo el número correcto de columnas.
+
+1. Seleccionar una categoría en el sitio vulnerable.
+2. En la request interceptada, editar el valor del parámetro `category` para que contenga el siguiente valor:
+
+```
+category=Accesories'+UNION+SELECT+NULL--
+```
+
+3. Como la consulta original no devuelve una columna, el servidor devuelve un código de error 500. Se debe concatenar otro `NULL`.
+
+```
+category=Accesories'+UNION+SELECT+NULL,NULL--
+```
+
+4. Nuevamente volvió a dar error, entonces se debe volver a concatenar otro `NULL` hasta que no haya más error.
+5. Finalmente con 3 `NULL` no devolvió ningún error, lo que significa que la consulta original devuelve 3 columnas.
+
+### [SQL injection UNION attack, finding a column containing text](https://portswigger.net/web-security/sql-injection/union-attacks/lab-find-column-containing-text)
+
+Normalmente, los datos interesantes obtenidos mediante una inyección SQL son strings, porlo que, una vez averiguado cuántas columnas devuelve, se debe evaluar cuáles de ellas contienen datos de tipo string. Esto se puede lograr enviando las siguientes cargas (suponiendo que la consulta devuelve 3 columnas):
+
+```
+' UNION SELECT 'a',NULL,NULL--
+' UNION SELECT NULL,'a',NULL--
+' UNION SELECT NULL,NULL,'a',--
+```
+
+Cuando una response no devuelva error, quiere decir que la columna que contiene texto está dada por la posición del string de prueba `'a'` (que puede ser cualquier string). Para resolver este laboratorio se debe:
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. Averiguar cuántas columnas devuelve la consulta original, tal como se vio en el laboratorio anterior (en este caso devuelve 3).
+3. Ahora se debe averiguar cuál de esas columnas es de tipo `VARCHAR`. Para eso, se debe reemplazar el primer `NULL` por el string aleatorio brindado por el laboratorio (en mi caso fue `'xw5KZ4'`). La consulta debería quedar así:
+
+```
+GET /filter?category=Accesories' UNION SELECT 'xw5KZ4',NULL,NULL-- HTTP/1.1
+...
+```
+
+4. Como dio error 500, se tiene que reemplazar el siguiente NULL, y así hasta dar con el correcto.
+5. Al segundo intento no dio problemas, por lo tanto, la segunda columna contiene datos de tipo `VARCHAR`.
+
+### [SQL injection UNION attack, retrieving data from other tables](https://portswigger.net/web-security/sql-injection/union-attacks/lab-retrieve-data-from-other-tables)
+
+Una vez que ya determiné el número de columnas devuelto por la consulta original, cuáles de ellas son de tipo string, y qué tablas y columnas contienen la información deseada, se pueden obtener los datos inyectando un código similar al siguiente:
+
+```
+' UNION SELECT username, password FROM users--
+```
+
+Suponiendo que la consulta devuelve dos columnas con strings, y que existe una tabla `users` con dos columnas `username` y `password`. Para resolver este laboratorio se debe:
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, primero averiguar cuántas columnas devuelve la consulta, y cuáles son del tipo `VARCHAR`. En este caso devuelve dos columnas, y ambas son de ese tipo (que sorpresa).
+3. Ahora, para obtener todos los nombres de usuarios y contraseñas se inyecta la carga `'+UNION+SELECT+username,+password+FROM+users--`. La request queda con el siguiente formato:
+
+```
+GET /filter?category=Accesories'+UNION+SELECT+username,+password+FROM+users-- HTTP/1.1
+...
+```
+
+4. Finalmente, entre los productos mostrados en el sitio, estarán los nombres de usuarios con sus respectivas contraseñas.
 
 ---
 
