@@ -26,6 +26,24 @@
 
 ## [SQL Injection](https://portswigger.net/web-security/sql-injection)
 
+### [SQL injection vulnerability in WHERE clause allowing retrieval of hidden data](https://portswigger.net/web-security/sql-injection/lab-retrieve-hidden-data)
+
+Cuando el usuario selecciona una categoría de productos en el sitio objetivo, se ejecuta la siguiente consulta SQL en el servidor (tomando como ejemplo la categoría Gifts):
+
+```
+SELECT * FROM products WHERE category = 'Gifts' AND released = 1
+```
+
+Como el nombre de la categoría que se envía en la request no es sanitizado antes de incluirse en la consulta, esto permite que un atacante la manipule y ejecute una inyección SQL. Para resolver el laboratorio se debe hacer lo siguiente:
+
+1. Seleccionar una categoría en el sitio vulnerable y examinar la request interceptada en Burp Suite.
+2. En la sentencia GET, modificar el parámetro `category` para que devuelva todos los registros de la tabla. Esto se puede lograr colocando una comilla simple para cerrar el string luego de `Accesories` (permitiendo insertar código SQL a continuación) y con una operación `OR 1=1`, lo que devuelve siempre `true`. Finalmente, se agrega el operador `--`, que comenta el resto de la consulta que está en el servidor. La petición debería quedar de la siguiente forma:
+```
+GET /filter?category=Accesories'OR+1=1-- HTTP/1.1
+...
+```
+3. Por último, se envía la request, y el laboratorio estará resuelto.
+
 ---
 
 ## [Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting)
