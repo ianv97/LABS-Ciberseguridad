@@ -44,6 +44,24 @@ GET /filter?category=Accesories'OR+1=1-- HTTP/1.1
 ```
 3. Por último, se envía la request, y el laboratorio estará resuelto.
 
+## [SQL injection vulnerability allowing login bypass](https://portswigger.net/web-security/sql-injection/lab-login-bypass)
+
+Cuando el usuario intenta iniciar sesión en el sitio objetivo, suponiendo que las credenciales utilizadas son `usuario` y `contraseña`, se ejecuta la siguiente consulta:
+
+```
+SELECT * FROM users WHERE username = 'usuario' AND password = 'contraseña'
+```
+
+Si no se sanitiza el parámetro del usuario, se puede iniciar sesión con cualquier cuenta mediante una inyección SQL. Para resolver el laboratorio se debe:
+
+1. Acceder a la página de Login del sitio vulnerable, e intentar iniciar sesión con valores de usuario y contraseña arbitrarios.
+2. En la request interceptada, en la última línea, donde se encuentra el token CSRF, se modifica el valor del parámetro `username` por `administrator'--`. Esto evita que se compruebe la contraseña, permitiendo iniciar sesión como dicho usuario. La petición debería quedar de la siguiente forma:
+
+```
+...
+csrf=[token_csrf]&username=administrator'--&password=ramdom_characters
+```
+
 ---
 
 ## [Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting)
