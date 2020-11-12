@@ -129,6 +129,21 @@ GET /filter?category=Accesories'+UNION+SELECT+username,+password+FROM+users-- HT
 
 4. Finalmente, entre los productos mostrados en el sitio, estarán los nombres de usuarios con sus respectivas contraseñas.
 
+### [SQL injection UNION attack, retrieving multiple values in a single column](https://portswigger.net/web-security/sql-injection/union-attacks/lab-retrieve-multiple-values-in-single-column)
+
+En caso de que la consulta original devuelva una sola columna, se pueden concatenar los datos recuperados, incluyendo un separador para distinguir los distintos valores. Por ejemplo:
+
+```
+' UNION SELECT username || '~' || password FROM users--
+```
+
+El operador para concatenar varía según el motor de bases de datos que utiliza el servidor. Para resolver este laboratorio se debe:
+
+1. Seleccionar una categoría de productos del sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta y cuál es del tipo `VARCHAR`. En este caso, la consulta original devuelve dos columnas, pero sólo la segunda es del tipo `VARCHAR`.
+3. Ahora, para recuperar los usuarios y contraseñas se deben concatenar ambos campos en una sola columna con el payload `'+UNION+SELECT+NULL,username||'~'||password+FROM+users--`.
+4. Entre los productos mostrados por el sitio se listan los usuarios y contraseñas. Sólo resta iniciar sesión como administrator y listo.
+
 ---
 
 ## [Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting)
