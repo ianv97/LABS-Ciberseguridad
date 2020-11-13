@@ -146,6 +146,104 @@ El operador para concatenar varía según el motor de bases de datos que utiliza
 3. Ahora, para recuperar los usuarios y contraseñas se deben concatenar ambos campos en una sola columna con el payload `'+UNION+SELECT+NULL,username||'~'||password+FROM+users--`.
 4. Entre los productos mostrados por el sitio se listan los usuarios y contraseñas. Sólo resta iniciar sesión como administrator y listo.
 
+### [SQL injection attack, querying the database type and version on Oracle](https://portswigger.net/web-security/sql-injection/examining-the-database/lab-querying-database-version-oracle)
+
+En caso de suponer que el sitio vulnerable usa un motor de bases de datos Oracle, se puede usar un ataque UNION para obtener la versión del motor utilizado.
+
+Se debe tener en cuenta que en Oracle todas las consultas `SELECT` deben incluir un `FROM`, aunque no se extraigan datos de ninguna tabla. Para eso se puede utilizar la tabla `DUAL`. Para resolver este laboratorio se debe:
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta original, y cuáles de esas contienen strings, tal como se hizo en los laboratorios anteriores (en este caso devuelve dos columnas con strings).
+3. En Oracle se puede obtener la versión del motor con `SELECT BANNER FROM v$version`. Adaptando al escenario del laboratorio, el payload tendría esta forma:
+
+```
+category=Accesories'+UNION+SELECT+BANNER,+NULL+FROM+v$version--
+```
+
+4. Al final, se muestra el resultado entre los productos del sitio.
+
+### [SQL injection attack, querying the database type and version on MySQL and Microsoft](https://portswigger.net/web-security/sql-injection/examining-the-database/lab-querying-database-version-mysql-microsoft)
+
+En el caso de una base de datos Microsoft SQL Server o MySQL, la técnica es prácticamente la misma que en el caso anterior, salvo que la consulta para obtener la versión es simplemente `SELECT @@version`.
+
+Como el laboratorio usa MySQL, para comentar se utiliza `#`, ya que para usar `--` se debe agregar un espacio al final.
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta original, y cuáles de esas contienen strings, tal como se hizo en los laboratorios anteriores (en este caso devuelve dos columnas con strings).
+3. El payload para obtener la versión es:
+
+```
+category=Accesories'+UNION+SELECT+@@version,+NULL#
+```
+
+4. Al final, se muestra el resultado entre los productos del sitio.
+
+### [SQL injection attack, listing the database contents on non-Oracle databases](https://portswigger.net/web-security/sql-injection/examining-the-database/lab-listing-database-contents-non-oracle)
+
+La gran mayoría de los DBMS (menos Oracle) tienen una vista llamada `information_schema`, que brinda información acerca de la base de datos, como los nombres de las tablas y columnas. La tabla `information_schema.tables` contiene los nombres de todas las tablas, e `information_schema.columns` los nombres de todas las columnas de todas las tablas. Para resolver el laboratorio se debe:
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta original, y cuáles son `VARCHAR` (otra vez devuelve dos columnas de ese tipo).
+3. Para obtener los nombres de las tablas, usar el payload `'+UNION+SELECT+table_name,+NULL+FROM+information_schema.tables--` en el parámetro `category`.
+4. Luego, se deben obtener los nombres de las columnas de las tablas que aparentan almacenar usuarios y contraseñas, usando el payload `'+UNION+SELECT+column_name,+NULL+FROM information_schema.columns+WHERE+table_name+=+'nombre_de_la_tabla'--`.
+5. Después de probar con varias tablas, vi que `users_sdismv` es la que almacena las credenciales. Las columnas `username_rhprkn` y `password_wwnrwq` guardan los datos buscados.
+6. Sólo resta usar `'+UNION+SELECT+username_rhprkn,+password_wwnrwq+FROM+username_rhprkn--` e iniciar sesión con las credenciales de `administrator`.
+
+### [SQL injection attack, listing the database contents on Oracle](https://portswigger.net/web-security/sql-injection/examining-the-database/lab-listing-database-contents-oracle)
+
+En el caso de Oracle la operatoria varía ligeramente. Los nombres de las tablas se encuentran en `all_tables`, y los de las columnas en `all_tab_columns`. Para resolver el laboratorio se debe:
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta original, y cuáles son strings (otra vez devuelve dos columnas de ese tipo).
+3. Para obtener los nombres de las tablas, usar el payload `'+UNION+SELECT+table_name,NULL+FROM+all_tables--` en el parámetro `category`.
+4. Luego, se deben obtener los nombres de las columnas de las tablas que aparentan almacenar usuarios y contraseñas, usando el payload `'+UNION+SELECT+column_name,+NULL+FROM all_tab_columns+WHERE+table_name+=+'nombre_de_la_tabla'--`.
+5. Después de probar con varias tablas, vi que `USERS_TJPWIB` es la que almacena las credenciales. Las columnas `USERNAME_KJFHXT` y `PASSWORD_HAQQFY` guardan los datos buscados.
+6. Sólo resta usar `'+UNION+SELECT+USERNAME_KJFHXT,+PASSWORD_HAQQFY+FROM+USERS_TJPWIB--` e iniciar sesión con las credenciales de `administrator`.
+
+### [Blind SQL injection with conditional responses](https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses)
+
+Una blind SQL injection ("inyección SQL a ciegas") se da cuando una aplicación es vulnerable a una inyección SQL, pero la respuesta HTTP no contiene la respuesta de una consulta ni errores de la DB.
+
+En este laboratorio, el sitio vulnerable usa una cookie de rastreo para realizar analítica. Al procesar una request, se ejecuta una consulta SQL para ver si el valor de la cookie corresponde a un usuario existente. En la response no se devuelve ningún resultado o error, pero el sitio muestra un mensaje de "Welcome back" si la consulta devuelve algún resultado, indicando que es un usuario conocido.
+
+Para resolver este laboratorio se debe:
+
+1. Visitar la página principal del sitio vulnerable.
+2. Usando Burp, comprobar si existe un usuario `administrator` en la tabla `users`. Para esto, al final de la request, al valor del parámetro `TrackingId` agregar el payload `'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'--`.
+3. Como apareció el mensaje de Welcome back, quiere decir que ese usuario existe.
+4. Usando Burp Repeater, averiguar cuántos caracteres tiene la contraseña con el payload
+
+```'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+length(password)=1--```
+
+5. Esto se debe hacer hasta que aparezca el mensaje Welcome back. Para ahorrar tiempo y esfuerzo, se puede hacer una búsqueda binaria o usar Burp intruder. En este caso, la contraseña tiene 20 caracteres.
+6. Usando Burp Intruder, averiguar uno por uno cuáles son los caracteres que conforman la contraseña. Para esto se usa el payload `'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+substring(password,1,1)='a'--` y se configura Intruder de esta forma:
+    - En la pestaña Positions, hacer clic en Clear §.
+    - Seleccionar la `a` y hacer clic en Add §.
+    - En la pestaña Payloads, seleccionar Simple list, y debajo de Payload Options agregar todas las letras en minúscula y números (el laboratorio asume que la contraseña sólo contiene esos caracteres).
+    - En la pestaña Options, en la sección Grep - Match eliminar todas las entradas de la lista y agregar "Welcome back". Esto resalta las responses que contienen dicha frase.
+7. Iniciar el ataque y esperar a que aparezca un resultado que contenga Welcome back. El caracter que esté en la columna Payload es el que se encuentra en la contraseña.
+8. Ahora repetir el último paso para cada una de las 19 posiciones restantes, reemplazando el primer 1 por la posición correspondiente. Esto se automatizar usando un ataque del tipo Cluster bomb. En mi caso no funcionó, ya que luego de enviar 200 de 720 request, el laboratorio se reinició y todas empezaron a devolver error 504. Así que tuve que hacer manualmente.
+9. Una vez que se tenga la contraseña completa, iniciar sesión como administrator y listo.
+
+### [Blind SQL injection with conditional errors](https://portswigger.net/web-security/sql-injection/blind/lab-conditional-errors)
+
+Puede darse el caso de que la aplicación no varíe su comportamiento si la consulta arroja resultados o no. Pero si un error no tratado de la base de la datos (como una división por cero) cambia la response (por ejemplo, devolviendo un error), se puede aprovechar para utilizar una inyección SQL.
+
+En este laboratorio no hay mensaje de "Welcome back", pero la response devuelve un error 500 Internal Server Error si falla la ejecución de la consulta. Para resolverlo se debe:
+
+1. Visitar la página principal del sitio vulnerable.
+2. Usando Burp, comprobar si existe un usuario `administrator` en la tabla `users`. Para esto, al final de la request, al valor del parámetro `TrackingId` agregar el payload `'+UNION+SELECT+CASE+WHEN+(username='administrator')+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--`.
+3. Como la consulta devuelve un error 500, quiere decir que ese usuario existe.
+4. Usando Burp Intruder, averiguar cuántos caracteres tiene la contraseña con el payload
+
+```'+UNION+SELECT+CASE+WHEN+(username='administrator'+AND+length(password)=1)+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--```
+
+5. Se selecciona el primer 1, se hace clic en Add §, y en Payload Options se agregan a la lista los números del 1 al 30. En este caso, la contraseña tiene 20 caracteres.
+6. Usando Burp Intruder, averiguar uno por uno cuáles son los caracteres que conforman la contraseña. Para esto se usa el payload `'+UNION+SELECT+CASE+WHEN+(username='administrator'+AND+substr(password,1,1)='a')+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--` y se configura de la misma forma que el laboratorio anterior, pero en Grep - Match se agrega "Internal Server Error".
+7. Iniciar el ataque y esperar a que aparezca un resultado que contenga dicho error. El caracter que esté en la columna Payload es el que se encuentra en la contraseña.
+8. Ahora repetir el último paso para cada una de las 19 posiciones restantes, igual que en el laboratorio anterior.
+9. Una vez que se tenga la contraseña completa, iniciar sesión como administrator y listo.
+
 ---
 
 ## [Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting)
