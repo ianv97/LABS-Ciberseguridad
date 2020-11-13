@@ -213,16 +213,35 @@ Para resolver este laboratorio se debe:
 3. Como apareció el mensaje de Welcome back, quiere decir que ese usuario existe.
 4. Usando Burp Repeater, averiguar cuántos caracteres tiene la contraseña con el payload
 
-`'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+length(password)=1--`
+```'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+length(password)=1--```
 
 5. Esto se debe hacer hasta que aparezca el mensaje Welcome back. Para ahorrar tiempo y esfuerzo, se puede hacer una búsqueda binaria o usar Burp intruder. En este caso, la contraseña tiene 20 caracteres.
 6. Usando Burp Intruder, averiguar uno por uno cuáles son los caracteres que conforman la contraseña. Para esto se usa el payload `'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+substring(password,1,1)='a'--` y se configura Intruder de esta forma:
-    - En la pestaña Positions, ahcer clic en Clear §.
-    - Seleccionar la `a` y ahcer clic en Add §.
+    - En la pestaña Positions, hacer clic en Clear §.
+    - Seleccionar la `a` y hacer clic en Add §.
     - En la pestaña Payloads, seleccionar Simple list, y debajo de Payload Options agregar todas las letras en minúscula y números (el laboratorio asume que la contraseña sólo contiene esos caracteres).
     - En la pestaña Options, en la sección Grep - Match eliminar todas las entradas de la lista y agregar "Welcome back". Esto resalta las responses que contienen dicha frase.
 7. Iniciar el ataque y esperar a que aparezca un resultado que contenga Welcome back. El caracter que esté en la columna Payload es el que se encuentra en la contraseña.
-8. Ahora repetir el último paso para cada una de las 19 posiciones restantes, reemplazando el primer 1 por la posición correspondiente. Esto se automatizar usando un ataque del tipo Cluster bomb. En mi caso no funcionó, ya que luego de enviar 200 de 720 request, el laboratorio se reinició y todas empezaron a devolver error 504. Así que tuve que ahcer manualmente.
+8. Ahora repetir el último paso para cada una de las 19 posiciones restantes, reemplazando el primer 1 por la posición correspondiente. Esto se automatizar usando un ataque del tipo Cluster bomb. En mi caso no funcionó, ya que luego de enviar 200 de 720 request, el laboratorio se reinició y todas empezaron a devolver error 504. Así que tuve que hacer manualmente.
+9. Una vez que se tenga la contraseña completa, iniciar sesión como administrator y listo.
+
+### [Blind SQL injection with conditional errors](https://portswigger.net/web-security/sql-injection/blind/lab-conditional-errors)
+
+Puede darse el caso de que la aplicación no varíe su comportamiento si la consulta arroja resultados o no. Pero si un error no tratado de la base de la datos (como una división por cero) cambia la response (por ejemplo, devolviendo un error), se puede aprovechar para utilizar una inyección SQL.
+
+En este laboratorio no hay mensaje de "Welcome back", pero la response devuelve un error 500 Internal Server Error si falla la ejecución de la consulta. Para resolverlo se debe:
+
+1. Visitar la página principal del sitio vulnerable.
+2. Usando Burp, comprobar si existe un usuario `administrator` en la tabla `users`. Para esto, al final de la request, al valor del parámetro `TrackingId` agregar el payload `'+UNION+SELECT+CASE+WHEN+(username='administrator')+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--`.
+3. Como la consulta devuelve un error 500, quiere decir que ese usuario existe.
+4. Usando Burp Intruder, averiguar cuántos caracteres tiene la contraseña con el payload
+
+```'+UNION+SELECT+CASE+WHEN+(username='administrator'+AND+length(password)=1)+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--```
+
+5. Se selecciona el primer 1, se hace clic en Add §, y en Payload Options se agregan a la lista los números del 1 al 30. En este caso, la contraseña tiene 20 caracteres.
+6. Usando Burp Intruder, averiguar uno por uno cuáles son los caracteres que conforman la contraseña. Para esto se usa el payload `'+UNION+SELECT+CASE+WHEN+(username='administrator'+AND+substr(password,1,1)='a')+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--` y se configura de la misma forma que el laboratorio anterior, pero en Grep - Match se agrega "Internal Server Error".
+7. Iniciar el ataque y esperar a que aparezca un resultado que contenga dicho error. El caracter que esté en la columna Payload es el que se encuentra en la contraseña.
+8. Ahora repetir el último paso para cada una de las 19 posiciones restantes, igual que en el laboratorio anterior.
 9. Una vez que se tenga la contraseña completa, iniciar sesión como administrator y listo.
 
 ---
