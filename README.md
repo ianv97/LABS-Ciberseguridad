@@ -146,6 +146,60 @@ El operador para concatenar varía según el motor de bases de datos que utiliza
 3. Ahora, para recuperar los usuarios y contraseñas se deben concatenar ambos campos en una sola columna con el payload `'+UNION+SELECT+NULL,username||'~'||password+FROM+users--`.
 4. Entre los productos mostrados por el sitio se listan los usuarios y contraseñas. Sólo resta iniciar sesión como administrator y listo.
 
+### [SQL injection attack, querying the database type and version on Oracle](https://portswigger.net/web-security/sql-injection/examining-the-database/lab-querying-database-version-oracle)
+
+En caso de suponer que el sitio vulnerable usa un motor de bases de datos Oracle, se puede usar un ataque UNION para obtener la versión del motor utilizado.
+
+Se debe tener en cuenta que en Oracle todas las consultas `SELECT` deben incluir un `FROM`, aunque no se extraigan datos de ninguna tabla. Para eso se puede utilizar la tabla `DUAL`. Para resolver este laboratorio se debe:
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta original, y cuáles de esas contienen strings, tal como se hizo en los laboratorios anteriores (en este caso devuelve dos columnas con strings).
+3. En Oracle se puede obtener la versión del motor con `SELECT BANNER FROM v$version`. Adaptando al escenario del laboratorio, el payload tendría esta forma:
+
+```
+category=Accesories'+UNION+SELECT+BANNER,+NULL+FROM+v$version--
+```
+
+4. Al final, se muestra el resultado entre los productos del sitio.
+
+### [SQL injection attack, querying the database type and version on MySQL and Microsoft](https://portswigger.net/web-security/sql-injection/examining-the-database/lab-querying-database-version-mysql-microsoft)
+
+En el caso de una base de datos Microsoft SQL Server o MySQL, la técnica es prácticamente la misma que en el caso anterior, salvo que la consulta para obtener la versión es simplemente `SELECT @@version`.
+
+Como el laboratorio usa MySQL, para comentar se utiliza `#`, ya que para usar `--` se debe agregar un espacio al final.
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta original, y cuáles de esas contienen strings, tal como se hizo en los laboratorios anteriores (en este caso devuelve dos columnas con strings).
+3. El payload para obtener la versión es:
+
+```
+category=Accesories'+UNION+SELECT+@@version,+NULL#
+```
+
+4. Al final, se muestra el resultado entre los productos del sitio.
+
+### [SQL injection attack, listing the database contents on non-Oracle databases](https://portswigger.net/web-security/sql-injection/examining-the-database/lab-listing-database-contents-non-oracle)
+
+La gran mayoría de los DBMS (menos Oracle) tienen una vista llamada `information_schema`, que brinda información acerca de la base de datos, como los nombres de las tablas y columnas. La tabla `information_schema.tables` contiene los nombres de todas las tablas, e `information_schema.columns` los nombres de todas las columnas de todas las tablas. Para resolver el laboratorio se debe:
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta original, y cuáles son `VARCHAR` (otra vez devuelve dos columnas de ese tipo).
+3. Para obtener los nombres de las tablas, usar el payload `'+UNION+SELECT+table_name,+NULL+FROM+information_schema.tables--` en el parámetro `category`.
+4. Luego, se deben obtener los nombres de las columnas de las tablas que aparentan almacenar usuarios y contraseñas, usando el payload `'+UNION+SELECT+column_name,+NULL+FROM information_schema.columns+WHERE+table_name+=+'nombre_de_la_tabla'--`.
+5. Después de probar con varias tablas, vi que `users_sdismv` es la que almacena las credenciales. Las columnas `username_rhprkn` y `password_wwnrwq` guardan los datos buscados.
+6. Sólo resta usar `'+UNION+SELECT+username_rhprkn,+password_wwnrwq+FROM+username_rhprkn--` e iniciar sesión con las credenciales de `administrator`.
+
+### [SQL injection attack, listing the database contents on Oracle](https://portswigger.net/web-security/sql-injection/examining-the-database/lab-listing-database-contents-oracle)
+
+En el caso de Oracle la operatoria varía ligeramente. Los nombres de las tablas se encuentran en `all_tables`, y los de las columnas en `all_tab_columns`. Para resolver el laboratorio se debe:
+
+1. Seleccionar una categoría de productos en el sitio vulnerable.
+2. En la request interceptada, averiguar cuántas columnas devuelve la consulta original, y cuáles son strings (otra vez devuelve dos columnas de ese tipo).
+3. Para obtener los nombres de las tablas, usar el payload `'+UNION+SELECT+table_name,NULL+FROM+all_tables--` en el parámetro `category`.
+4. Luego, se deben obtener los nombres de las columnas de las tablas que aparentan almacenar usuarios y contraseñas, usando el payload `'+UNION+SELECT+column_name,+NULL+FROM all_tab_columns+WHERE+table_name+=+'nombre_de_la_tabla'--`.
+5. Después de probar con varias tablas, vi que `USERS_TJPWIB` es la que almacena las credenciales. Las columnas `USERNAME_KJFHXT` y `PASSWORD_HAQQFY` guardan los datos buscados.
+6. Sólo resta usar `'+UNION+SELECT+USERNAME_KJFHXT,+PASSWORD_HAQQFY+FROM+USERS_TJPWIB--` e iniciar sesión con las credenciales de `administrator`.
+
 ---
 
 ## [Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting)
