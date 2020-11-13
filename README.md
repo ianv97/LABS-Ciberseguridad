@@ -390,17 +390,17 @@ peter-bC8z09
 
 ### [Basic server-side template injection](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-basic)
 
-### Descripción:
+#### Descripción:
 
 Al ver los detalles de un producto sin stock, se muestra de forma insegura el mensaje pasado mediante el parámetro message en la URL, posibilitando pasar un parámetro que sea evaluado en el servidor por el template ERB.
 
 #### Solución:
 
-Hacer una request a https://LABID.web-security-academy.net/?message=<%=system("rm /home/carlos/morale.txt")%>
+Dirigirse a https://LABID.web-security-academy.net/?message=<%=system("rm /home/carlos/morale.txt")%>
 
 ### [Basic server-side template injection (code context)](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-basic-code-context)
 
-### Descripción:
+#### Descripción:
 
 La funcionalidad que permite cambiar el nombre mostrado en los comentarios realizados en los post setea la propiedad del usuario que se debe mostrar (por ejemplo user.name). Al mostrar un comentario, esto es evaluado de forma insegura por el template, siendo vulnerable a un server-side template injection (la web usa Tornado). Esto se puede verificar tomando dicha request, seteando el parámetro blog-post-author-display=user.name}}{{2\*6 y comprobando que en los comentarios se muestra el nombre junto con un 12 al final.
 
@@ -409,6 +409,16 @@ La funcionalidad que permite cambiar el nombre mostrado en los comentarios reali
 1. Ir a My account y modificar el preferred name.
 2. Repetir la request seteando el parámetro blog-post-author-display=user.name}}{%25+import+os+%25}{{os.system('rm%20/home/carlos/morale.txt')
 3. Hacer un comentario en cualquier post.
+
+### [Server-side template injection using documentation](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-using-documentation)
+
+#### Descripción:
+
+Al editar un post vemos que se evalúan ciertas expresiones como ${product.price}. Además, la web está configurada en modo debug por lo que se puede escribir algo como ${variablenodeclarada} de manera que se produzca un error, siendo informados así del sistema de templates que se está usando. Con esto descubrimos que se trata de Freemaker de Java y podemos recurrir a la [documentación](https://freemarker.apache.org/docs/app_faq.html#faq_template_uploading_security) o al [post sobre dicho exploit](https://portswigger.net/research/server-side-template-injection).
+
+#### Solución:
+
+En la edición de un post insertar lo siguiente <#assign ex="freemarker.template.utility.Execute"?new()> \${ ex("rm /home/carlos/morale.txt") } y guardar.
 
 ---
 
