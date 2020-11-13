@@ -200,6 +200,31 @@ En el caso de Oracle la operatoria varía ligeramente. Los nombres de las tablas
 5. Después de probar con varias tablas, vi que `USERS_TJPWIB` es la que almacena las credenciales. Las columnas `USERNAME_KJFHXT` y `PASSWORD_HAQQFY` guardan los datos buscados.
 6. Sólo resta usar `'+UNION+SELECT+USERNAME_KJFHXT,+PASSWORD_HAQQFY+FROM+USERS_TJPWIB--` e iniciar sesión con las credenciales de `administrator`.
 
+### [Blind SQL injection with conditional responses](https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses)
+
+Una blind SQL injection ("inyección SQL a ciegas") se da cuando una aplicación es vulnerable a una inyección SQL, pero la respuesta HTTP no contiene la respuesta de una consulta ni errores de la DB.
+
+En este laboratorio, el sitio vulnerable usa una cookie de rastreo para realizar analítica. Al procesar una request, se ejecuta una consulta SQL para ver si el valor de la cookie corresponde a un usuario existente. En la response no se devuelve ningún resultado o error, pero el sitio muestra un mensaje de "Welcome back" si la consulta devuelve algún resultado, indicando que es un usuario conocido.
+
+Para resolver este laboratorio se debe:
+
+1. Visitar la página principal del sitio vulnerable.
+2. Usando Burp, comprobar si existe un usuario `administrator` en la tabla `users`. Para esto, al final de la request, al valor del parámetro `TrackingId` agregar el payload `'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'--`.
+3. Como apareció el mensaje de Welcome back, quiere decir que ese usuario existe.
+4. Usando Burp Repeater, averiguar cuántos caracteres tiene la contraseña con el payload
+
+`'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+length(password)=1--`
+
+5. Esto se debe hacer hasta que aparezca el mensaje Welcome back. Para ahorrar tiempo y esfuerzo, se puede hacer una búsqueda binaria o usar Burp intruder. En este caso, la contraseña tiene 20 caracteres.
+6. Usando Burp Intruder, averiguar uno por uno cuáles son los caracteres que conforman la contraseña. Para esto se usa el payload `'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+substring(password,1,1)='a'--` y se configura Intruder de esta forma:
+    - En la pestaña Positions, ahcer clic en Clear §.
+    - Seleccionar la `a` y ahcer clic en Add §.
+    - En la pestaña Payloads, seleccionar Simple list, y debajo de Payload Options agregar todas las letras en minúscula y números (el laboratorio asume que la contraseña sólo contiene esos caracteres).
+    - En la pestaña Options, en la sección Grep - Match eliminar todas las entradas de la lista y agregar "Welcome back". Esto resalta las responses que contienen dicha frase.
+7. Iniciar el ataque y esperar a que aparezca un resultado que contenga Welcome back. El caracter que esté en la columna Payload es el que se encuentra en la contraseña.
+8. Ahora repetir el último paso para cada una de las 19 posiciones restantes, reemplazando el primer 1 por la posición correspondiente. Esto se automatizar usando un ataque del tipo Cluster bomb. En mi caso no funcionó, ya que luego de enviar 200 de 720 request, el laboratorio se reinició y todas empezaron a devolver error 504. Así que tuve que ahcer manualmente.
+9. Una vez que se tenga la contraseña completa, iniciar sesión como administrator y listo.
+
 ---
 
 ## [Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting)
