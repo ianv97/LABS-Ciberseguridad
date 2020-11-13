@@ -398,6 +398,18 @@ Al ver los detalles de un producto sin stock, se muestra de forma insegura el me
 
 Hacer una request a https://LABID.web-security-academy.net/?message=<%=system("rm /home/carlos/morale.txt")%>
 
+### [Basic server-side template injection (code context)](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-basic-code-context)
+
+### Descripción:
+
+La funcionalidad que permite cambiar el nombre mostrado en los comentarios realizados en los post setea la propiedad del usuario que se debe mostrar (por ejemplo user.name). Al mostrar un comentario, esto es evaluado de forma insegura por el template, siendo vulnerable a un server-side template injection (la web usa Tornado). Esto se puede verificar tomando dicha request, seteando el parámetro blog-post-author-display=user.name}}{{2\*6 y comprobando que en los comentarios se muestra el nombre junto con un 12 al final.
+
+#### Solución:
+
+1. Ir a My account y modificar el preferred name.
+2. Repetir la request seteando el parámetro blog-post-author-display=user.name}}{%25+import+os+%25}{{os.system('rm%20/home/carlos/morale.txt')
+3. Hacer un comentario en cualquier post.
+
 ---
 
 ## [Directory traversal](https://portswigger.net/web-security/file-path-traversal)
