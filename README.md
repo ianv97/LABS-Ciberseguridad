@@ -505,7 +505,23 @@ Para resolver el laboratorio, se debe cargar un `iframe` en el exploit server, c
 <iframe src="https://id-del-laboratorio.web-security-academy.net/product?productId=1&'><script>alert(document.cookie)</script>" onload="if(!window.x)this.src='https://id-del-laboratorio.web-security-academy.net';window.x=1;">
 ```
 
-### []()
+### [Exploiting DOM clobbering to enable XSS](https://portswigger.net/web-security/dom-based/dom-clobbering/lab-dom-xss-exploiting-dom-clobbering)
+
+La pagína de una entrada del blog importa el archivo `loadCommentsWithDomClobbering.js`, el cual contiene el siguiente código:
+
+```
+let defaultAvatar = window.defaultAvatar || {avatar: '/resources/images/avatarDefault.svg'}
+```
+
+La variable `defaultAvatar` es vulnerable a DOM clobbering, debido a que está definida con un operador OR y una variable global. Se puede vulnerar esto declarando dos tags `a` con el mismo id, que hará que se agupen en una DOM collection. El `name` del segundo `a` es `avatar`, y su `href` es el código que se quiere inyectar. Pero el sitio vulnerable usa DOMPurify para mitigar los ataques DOM-based, por lo que el `href` tendrá que usar el protocolo `cid:`.
+
+Para resolver el laboratorio se deben hacer dos comentarios en una entrada: uno que contenga el siguiente texto:
+
+```
+<a id=defaultAvatar><a id=defaultAvatar name=avatar href="cid:&quot;onerror=alert(1)//">
+```
+
+Y otro que contenga cualquier cosa. Al volver a la entrada luego de postear el segundo comentario se va a ejecutar el `alert`.
 
 ### []()
 
