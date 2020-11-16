@@ -523,7 +523,23 @@ Para resolver el laboratorio se deben hacer dos comentarios en una entrada: uno 
 
 Y otro que contenga cualquier cosa. Al volver a la entrada luego de postear el segundo comentario se va a ejecutar el `alert`.
 
-### []()
+### [Clobbering DOM attributes to bypass HTML filters](https://portswigger.net/web-security/dom-based/dom-clobbering/lab-dom-clobbering-attributes-to-bypass-html-filters)
+
+El sitio usa la librería [html-janitor](https://github.com/guardian/html-janitor) (vulnerable a DOM clobbering y otras cosas), que usa la propiedad `attributes` para filtrar atributos HTML. Pero se puede vulnerar a dicha propiedad ahciendo que su `length` sea indefinido. Esto permite inyectar cualquier atributo en un elemento HTML.
+
+Para resolver el lab se debe realizar un comentario con el texto:
+
+```
+<form id=x tabindex=0 onfocus=alert(document.cookie)><input id=attributes>
+```
+
+Y después cargar en el exploit server:
+
+```
+<iframe src=https://id-del-lab.web-security-academy.net/post?postId=id-del-posteo onload="setTimeout(someArgument=>this.src=this.src+'#x',500)">
+```
+
+Cuando se carga el `iframe`, después de medio segundo (para que se cargue el comentario antes de ejecutarse el JS), se agrega `#x` al final de la URL, haciendo que se enfoque el elemento que tiene ese id (el `form` creado en el comentario). Por último el event handler `onfocus` hace que se ejecute la payload.
 
 ---
 
