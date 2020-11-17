@@ -1118,6 +1118,16 @@ Cookie: session=COOKIE-SESSION-VALUE
 username=wiener&action=upgrade
 ```
 
+### [User ID controlled by request parameter](https://portswigger.net/web-security/access-control/lab-user-id-controlled-by-request-parameter)
+
+#### Descripción:
+
+Iniciar sesión con las credenciales brindadas, ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=carlos
+
+#### Solución encontrada:
+
+lju45WipAzADFwJpbAuEDxYEQohba9Kc
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
