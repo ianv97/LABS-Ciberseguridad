@@ -1128,6 +1128,18 @@ Iniciar sesión con las credenciales brindadas, ir a My account y cambiar el par
 
 lju45WipAzADFwJpbAuEDxYEQohba9Kc
 
+### [User ID controlled by request parameter, with unpredictable user IDs](https://portswigger.net/web-security/access-control/lab-user-id-controlled-by-request-parameter-with-unpredictable-user-ids)
+
+#### Descripción:
+
+1. Buscar un post que haya sido escrito por carlos, hacer click en su nombre obteniendo así su ID en la url.
+2. Iniciar sesión con las credenciales brindadas, ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=carlos
+3. Enviar la API Key como solución
+
+#### Solución encontrada:
+
+2yG2kvUx4G4YGtTopcA0i3rhf6agGKG3
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
