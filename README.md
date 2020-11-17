@@ -1080,6 +1080,15 @@ Para encontrar la url del panel de administrador, inspeccionar el código de la 
 
 Activar en burp proxy la intercepción de las solicitudes, iniciar sesión con las credenciales proporcionadas (wiener:peter), forwardear la request y modificar en la respuesta la cookie Admin seteandola en true, dirigirse al panel de administrador y eliminar el usuario carlos, modificando la cookie en cada solicitud.
 
+### [User role can be modified in user profile](https://portswigger.net/web-security/access-control/lab-user-role-can-be-modified-in-user-profile)
+
+#### Solución:
+
+1. Iniciar sesión con las credenciales brindadas (wiener:peter)
+2. Ir a My account, cambiar el email, interceptar la request y agregar "roleid":2 quedando así:
+   { "email":"asd@mail.com", "roleid":2 }
+3. Ir a LABID.web-security-academy.net/admin y eliminar el usuario carlos
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
