@@ -1122,7 +1122,9 @@ username=wiener&action=upgrade
 
 #### Descripción:
 
-Iniciar sesión con las credenciales brindadas, ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=carlos
+1. Iniciar sesión con las credenciales brindadas
+2. Ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=carlos
+3. Enviar la API Key como solución
 
 #### Solución encontrada:
 
@@ -1133,12 +1135,26 @@ lju45WipAzADFwJpbAuEDxYEQohba9Kc
 #### Descripción:
 
 1. Buscar un post que haya sido escrito por carlos, hacer click en su nombre obteniendo así su ID en la url.
-2. Iniciar sesión con las credenciales brindadas, ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=carlos
-3. Enviar la API Key como solución
+2. Iniciar sesión con las credenciales brindadas
+3. Ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=carlos
+4. Enviar la API Key como solución
 
 #### Solución encontrada:
 
 2yG2kvUx4G4YGtTopcA0i3rhf6agGKG3
+
+### [User ID controlled by request parameter with data leakage in redirect](https://portswigger.net/web-security/access-control/lab-user-id-controlled-by-request-parameter-with-data-leakage-in-redirect)
+
+#### Descripción:
+
+1. Iniciar sesión con las credenciales brindadas
+2. Ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=carlos
+3. Mirar en Burp la response, la cual junto con la redirección contiene la página como si hubiera sido cargada normalmente
+4. Enviar la API Key como solución
+
+#### Solución encontrada:
+
+lgCjKOybA0VIA2r6BA8kOHqo3XcllD5o
 
 ---
 
