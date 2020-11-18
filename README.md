@@ -1147,7 +1147,7 @@ lju45WipAzADFwJpbAuEDxYEQohba9Kc
 
 #### Descripción:
 
-1. Iniciar sesión con las credenciales brindadas
+1. Iniciar sesión con las credenciales brindadas (wiener:peter)
 2. Ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=carlos
 3. Mirar en Burp la response, la cual junto con la redirección contiene la página como si hubiera sido cargada normalmente
 4. Enviar la API Key como solución
@@ -1155,6 +1155,20 @@ lju45WipAzADFwJpbAuEDxYEQohba9Kc
 #### Solución encontrada:
 
 lgCjKOybA0VIA2r6BA8kOHqo3XcllD5o
+
+### [User ID controlled by request parameter with password disclosure](https://portswigger.net/web-security/access-control/lab-user-id-controlled-by-request-parameter-with-password-disclosure)
+
+#### Descripción:
+
+1. Iniciar sesión con las credenciales brindadas (wiener:peter)
+2. Ir a My account y cambiar el parámetro id de la url a LABID.web-security-academy.net/my-account?id=administrator
+3. Inspeccionar el input enmascarado de cambio de contraseña, obteniendo así su valor
+4. Iniciar sesión con la cuenta administrator y la contraseña obtenida en el paso anterior, y eliminar el usuario carlos
+
+#### Solución encontrada:
+
+Username: administrator
+Password: 9mj07l2mgwqlnydilrxg
 
 ---
 
