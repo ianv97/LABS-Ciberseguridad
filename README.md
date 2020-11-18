@@ -1491,6 +1491,40 @@ Se pueden pedir hasta 99 unidades de cada producto por vez, pero esto se puede r
 4. Añadir otros producto de manera que el precio quede entre $0 y $100 (por ejemplo 47 unidades de Lightweight "l33t" Leather Jacket y 16 unidades de Conversation Controlling Lemon: 47 \* $1337 + 16 \* $80.72 = 64.130,52)
 5. Completar la orden
 
+### [Inconsistent handling of exceptional input](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-inconsistent-handling-of-exceptional-input)
+
+No pudimos resolver el laboratorio porque se requiere usar las Engagement tools (dentro de Target -> Site map), que sólo están disponibles en la versión Pro de Burp Suite.
+
+### [Inconsistent security controls](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-inconsistent-security-controls)
+
+No pudimos resolver el laboratorio porque se requiere usar las Engagement tools (dentro de Target -> Site map), que sólo están disponibles en la versión Pro de Burp Suite.
+
+### [Weak isolation on dual-use endpoint](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-weak-isolation-on-dual-use-endpoint)
+
+Para resolver este laboratorio se debe:
+
+1. Iniciar sesión en el sitio vulnerable, ir a "My account", activar Intercept y cambiar la contraseña.
+2. En la request interceptada, eliminar el parámetro `current-password`.
+3. En la misma request, cambiar el valor del parámetro `username` por `administrator`.
+4. *Forwardear* la request.
+5. Cerrar sesión e iniciar sesión como administrator con la contraseña cambiada.
+6. Ir al panel de administración y eliminar al usuario carlos.
+
+### [Insufficient workflow validation](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-insufficient-workflow-validation)
+
+1. Con Intercept activado, iniciar sesión y comprar cualquier producto que esté dentro del crédito disponible (por ejemplo, un *Beat the Vacation Traffic*).
+2. La última request interceptada, cuando se compra algo (la de `POST /cart/checkout`), redirige a una página que confirma que la compra fue exitosa. Esa request hay que enviar a Repeater.
+3. Agregar un *Lightweight l33t leather jacket* al carrito.
+4. Con Repeater volver a enviar la request de confirmación de compra. La compra se completa y no se descuenta saldo.
+
+### []()
+
+### []()
+
+### []()
+
+### []()
+
 ---
 
 ## [HTTP Host header attacks](https://portswigger.net/web-security/host-header)
