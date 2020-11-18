@@ -1517,13 +1517,24 @@ Para resolver este laboratorio se debe:
 3. Agregar un *Lightweight l33t leather jacket* al carrito.
 4. Con Repeater volver a enviar la request de confirmación de compra. La compra se completa y no se descuenta saldo.
 
-### []()
+### [Authentication bypass via flawed state machine](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-flawed-state-machine)
 
-### []()
+No pudimos resolver el laboratorio porque se requiere usar las Engagement tools (dentro de Target -> Site map), que sólo están disponibles en la versión Pro de Burp Suite.
 
-### []()
+### [Flawed enforcement of business rules](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-flawed-enforcement-of-business-rules)
 
-### []()
+Para resolver este laboratorio se debe:
+
+1. Iniciar sesión en el sitio vulnerable. Los nuevos usuarios pueden usar el cupón de descuento `NEWCUST5`.
+2. Al final de la página, suscribirse al *newsletter*. Entonces se puede usar otro código más, `SIGNUP30`.
+3. Agregar un *Lightweight l33t leather jacket* al carrito.
+4. Ir al checkout y aplicar ambos cupones.
+5. Si se intenta aplicar dos veces seguidas un mismo cupón, sale un error. Sin embargo, si se van alternando los cupones, no da ningún error.
+6. Reutilizar ambos cupones hasta que el total de la compra sea menor al saldo disponible y comprar el producto.
+
+### [Infinite money logic flaw](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-infinite-money)
+
+### [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
 
 ---
 
