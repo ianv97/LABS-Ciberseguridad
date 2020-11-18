@@ -1170,6 +1170,19 @@ lgCjKOybA0VIA2r6BA8kOHqo3XcllD5o
 Username: administrator
 Password: 9mj07l2mgwqlnydilrxg
 
+### [Insecure direct object references](https://portswigger.net/web-security/access-control/lab-insecure-direct-object-references)
+
+#### Descripción:
+
+1. Ir a LABID.web-security-academy.net/download-transcript/1.txt
+2. Abrir el archivo descargado, el cual contiene la contraseña del usuario carlos
+3. Iniciar sesión con el usuario carlos y la contraseña obtenida en el paso anterior
+
+#### Solución encontrada:
+
+Username: carlos
+Password: 32433u498gsetj66a498
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
