@@ -1669,6 +1669,32 @@ Para resolver este laboratorio se debe:
 
 ### [Infinite money logic flaw](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-infinite-money)
 
+Para resolver este laboratorio se debe:
+
+1. Con el Intercept de Burp activado, iniciar sesión y suscribirse al *newsletter* para obtener un cupón de descuento `SIGNUP30`.
+2. Agregar al carrito una `Gift card` e ir al checkout. Aplicar el código para obtener un 30% de descuento. Confirmar la orden y copiar el código de la gift card.
+3. Ir a My account y *redimir* la gift card. Esto agrega $3 al saldo de la tienda.
+4. En HTTP history, la request `POST /gift-card` contiene el código de la misma al *redimirse*.
+5. Ir a "Project options" > "Sessions". En el panel "Session handling rules" hacer clic en "Add". Se abre el diálogo "Session handling rule editor".
+6. Ir a la pestaña "Scope". Dentro de "URL Scope" seleccionar "Include all URLs".
+7. Volver a la pestaña "Details". Dentro de "Rule actions" hacer clic en "Add" > "Run a macro". Dentro de "Select macro" hacer clic en "Add" para abrir el Macro Recorder.
+8. Seleccionar las siguientes requests (en este orden), Después hacer clic en "OK". Se abre el Macro editor.
+
+```
+POST /cart
+POST /cart/coupon
+POST /cart/checkout
+GET /cart/order-confirmation?order-confirmed=true
+POST /gift-card
+```
+
+9. En la lista de requests, seleccionar `GET /cart/order-confirmation?order-confirmed=true`. Hacer clic en "Configure item". En el diálogo que se abre hacer clic en "Add" para crear un nuevo parámetro, al que ahy que llamarlo `gift-card`. Seleccionar el código de la gift card al final de la response. Hacer clic en "OK" dos veces para volver al Macro Editor.
+10. Seleccionar la request `POST /gift-card` y hacer clic en "Configure item" otra vez. En la sección "Parameter handling" seleccionar "Derive from prior response" del drop-down al lado de `gift-card`, y en el de al lado seleccionar "Response 4". Hacer clic en "OK".
+11. En el Macro Editor, hacer clic en "Test macro". Ver el código de la gift card generado en la response a `GET /cart/order-confirmation?order-confirmation=true`. Asegurarse que el parámetro `gift-card` de `POST /gift-card request` coincide con el código anterior y de que la response tiene código 302. Hacer clic en "OK" hasta volver a la ventana principal del Burp.
+12. Enviar la request `GET /my-account` a Intruder. Usar el ataque "Sniper" y hacer clic en "Clear §".
+13. En la pestaña "Payloads", seleccionar el tipo de payload "Null payloads". Dentro de "Payload options" elegir generar 412 payloads. En la pestaña "Options", poner el "thread count" en 1. Empezar el ataque.
+14. Cuando termine el ataque, comprar el *Lightweight l33t leather jacket* y listo.
+
 ### [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
 
 ---
