@@ -1697,6 +1697,22 @@ POST /gift-card
 
 ### [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
 
+Para resolver este lab se debe:
+
+1. Iniciar sesión con la opción "Stay logged in" activada y hacer un comentario. En la request interceptada por Burp la cookie `stay-logged-in` está encriptada.
+2. Hacer otro comentario pero con una dirección de correo inválida (ej: `foofoofoobarbarbar`). En la response habrá una cookie `notification` encriptada, y luego se redirige a la entrada del blog.
+3. En el blog va a haber un mensaje de error `Invalid email address: email-invalido-ingresado`. Al parecer, eso se desencripta de la cookie de `notification`. Enviar las request `POST /post/comment` y `GET /post?postId=x` a Repeater.
+4. Dentro de Repeaterm se puede usar el parámetro `email` del POST para encriptar cualquier cosa, y ver el texto cifrado en el header `Set-Cookie`. También se puede usar la cookie `notification` del GET para desencriptar otra cualquier cosa y ver el resultado en el mensaje de error del blog (el laboratorio recomienda renombrar las pestañas de ambas request, para saber cuál encripta y cuál desencripta).
+5. En la request de desencriptar, copiar la cookie `stay-logged-in` y pegarla en `notification`. Enviar la request. Ahora la response ya no tiene mensaje de error, sino que tiene esa cookie pero desencriptada. El formato de salida es `usario:timestamp`. Copiar el timestamp.
+6. Ir a la request de encriptar y cambiar el parámetro `email` por `administrator:timestamp`. Enviar la request y copiar el nuevo valor de `notification` de la response.
+7. Desencriptar el valor obtenido. Sea cual sea el valor ques se pase, se agrega el prefijo `Invalid email address: `. Enviar el valor de `notification` a Decoder.
+8. En Decoder, decodear en URL y Base64 la cookie. Seleccionar "Hex", hacer clic derecho en el primer byte, seleccionar "Delete bytes" y eliminar 23 bytes (para limpiar el mensaje de Invalid email).
+9. Volver a encodear el resultado, copiarlo en `notification` y enviar la request. Ahora en la response va a haber un mensaje de error, indicando que la entrada a encriptar debe ser múltiplo de 16 (porque usa un algoritmo de encriptación por bloques).
+10. Volver a la request de encriptar en Repeater y agregar 9 caracteres cualesquiera al comienzo del valor de `email` (por ejemplo: `xxxxxxxxxadministrator:your-timestamp`). Enviar la request y desencriptar.
+11. Enviar el texto cifrado a Decoder y volver a decodear como antes. Eliminar 32 bytes al comienzo. Volver a encodear y pegar el resultado en `notification`. Ahora el resultado en la response debería ser `administrator:timestamp`.
+12. En HTTP history, enviar la request `GET /` a Repeater. Borrar la cookie `session` y reemplazar la cookie `stay-logged-in` con el último texto cifrado. Enviar la request, y ahora se va a estar logueado como administrator.
+13. Usando Repeater, navegar a `/admin/delete?username=carlos` para resolver el laboratorio.
+
 ---
 
 ## [HTTP Host header attacks](https://portswigger.net/web-security/host-header)
