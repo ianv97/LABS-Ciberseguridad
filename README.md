@@ -1876,3 +1876,11 @@ Enviamos la request y repetimos el proceso limpiando "destructores de caché" (l
 
 Al intentar acceder a /admin desde el navegador en el laboratorio, nos sale el mensaje Admin Interface Only Available for local users. Analizando esta request con burpsuite, mandándola al repeater, cambiamos el contenido de host header por localhost, con lo que accedemos al panel de administración con la opción de eliminar usuarios.
 Cambiamos la solicitud por /admin/delete?username=carlos
+
+### [Routing-based SSRF](https://portswigger.net/web-security/host-header/exploiting/lab-host-header-routing-based-ssrf)
+
+No pudimos resolver el laboratorio porque se requiere usar el Burp Collaborator Client, que sólo están disponibles en la versión Pro de Burp Suite.
+
+### [SSRF via flawed request parsing](https://portswigger.net/web-security/host-header/exploiting/lab-host-header-ssrf-via-flawed-request-parsing)
+
+No pudimos resolver el laboratorio porque se requiere usar el Burp Collaborator Client, que sólo están disponibles en la versión Pro de Burp Suite.
