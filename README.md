@@ -766,6 +766,19 @@ No pudimos resolver el laboratorio porque se requiere usar el Burp Collaborator 
 1. Consultar el stock de un producto y capturar la request
 2. En Burp Intruder setear el parámetro stockApi=http://192.168.0.$XX$:8080/admin/delete?username=carlos haciendo variar la XX (último octeto de la IP) entre 1 y 255
 
+### [SSRF with blacklist-based input filter](https://portswigger.net/web-security/ssrf/lab-ssrf-with-blacklist-filter)
+
+#### Solución:
+
+Al entrar en los detalles de algún producto y pulsar Check Stock, interceptando con burpsuite y mandando la petición al repeater, al cambiar el valor de stockApi por http://127.0.0.1/, obtenemos un bloqueo de la petición.
+Lo omitimos cambiando a http://127.1/.
+Al poner http://127.1/admin nuevamente se bloquea la petición, por lo que sería conveniente ofuscar caracteres.
+Una opción para evitar el bloqueo es ofuscano caracteres, por ejemplo la letra 'a' = %2561:
+http://127.1/%2561dmin
+O la letra d = %2564:
+http://127.1/a%2564min
+De esta manera podemos acceder a la interfaz de administración y eliminar usuarios
+
 ---
 
 ## [HTTP request smuggling](https://portswigger.net/web-security/request-smuggling)
