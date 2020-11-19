@@ -801,6 +801,14 @@ Es posible entonces aprovechar esta vulnerabilidad para pasar la redirección al
 Esta url le pasamos al parámetro stockApi, de la request que se manda al pulsar el botón Check Stock, y accedemos al panel de administración, de donde podemos extraer las urls para eliminar usuarios, la cual sería:
 /product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos
 
+### [Blind SSRF with out-of-band detection](https://portswigger.net/web-security/ssrf/blind/lab-out-of-band-detection)
+
+No pudimos resolver el laboratorio porque se requiere usar el Burp Collaborator Client, que sólo están disponibles en la versión Pro de Burp Suite.
+
+### [Blind SSRF with Shellshock exploitation](https://portswigger.net/web-security/ssrf/blind/lab-shellshock-exploitation)
+
+No pudimos resolver el laboratorio porque se requiere usar el Burp Collaborator Client, que sólo están disponibles en la versión Pro de Burp Suite.
+
 ---
 
 ## [HTTP request smuggling](https://portswigger.net/web-security/request-smuggling)
