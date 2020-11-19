@@ -790,6 +790,17 @@ http://localhost:80%2523@stock.weliketoshop.net/admin/
 Accedemos al panel de administración, de donde podemos obtener la url para eliminar usuarios, la cual es:
 http://localhost:80%2523@stock.weliketoshop.net/admin/delete?username=carlos
 
+### [SSRF with filter bypass via open redirection vulnerability](https://portswigger.net/web-security/ssrf/lab-ssrf-filter-bypass-via-open-redirection)
+
+#### Solución:
+
+Al entrar en los detalles de algún producto y pulsar Check Stock, interceptando con burpsuite y mandando la petición al repeater, al cambiar el valor de stockApi por una url que sea de un host diferente, devuelve un status 400 y el mensaje "Invalid external stock check url 'Invalid URL'".
+Al hacer click en Next Product e interceptar la request con burpsuite, vemos que se tiene un open redirection.
+Es posible entonces aprovechar esta vulnerabilidad para pasar la redirección al panel de administración de la siguiente manera: 
+/product/nextProduct?path=http://192.168.0.12:8080/admin
+Esta url le pasamos al parámetro stockApi, de la request que se manda al pulsar el botón Check Stock, y accedemos al panel de administración, de donde podemos extraer las urls para eliminar usuarios, la cual sería:
+/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos
+
 ---
 
 ## [HTTP request smuggling](https://portswigger.net/web-security/request-smuggling)
