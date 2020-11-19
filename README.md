@@ -1871,3 +1871,8 @@ Probando agregar un segundo header para el host, se puede ver en el body de la r
 Lo siguiente es el ir al exploit server y en el input file ponemos /resources/js/tracking.js, y en el body el alert con el document.cookie.
 En el segundo host header en el repetidor ponemos la url del exploit server.
 Enviamos la request y repetimos el proceso limpiando "destructores de caché" (los parámetros arbitrarios que agregamos para obtener una respuesta del servidor) y actualizando la página de inicio hasta que el laboratorio se marque como solved.
+
+### [Host header authentication bypass](https://portswigger.net/web-security/host-header/exploiting/lab-host-header-authentication-bypass)
+
+Al intentar acceder a /admin desde el navegador en el laboratorio, nos sale el mensaje Admin Interface Only Available for local users. Analizando esta request con burpsuite, mandándola al repeater, cambiamos el contenido de host header por localhost, con lo que accedemos al panel de administración con la opción de eliminar usuarios.
+Cambiamos la solicitud por /admin/delete?username=carlos
