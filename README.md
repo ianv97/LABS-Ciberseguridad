@@ -779,6 +779,17 @@ O la letra d = %2564:
 http://127.1/a%2564min
 De esta manera podemos acceder a la interfaz de administración y eliminar usuarios
 
+### [SSRF with whitelist-based input filter](https://portswigger.net/web-security/ssrf/lab-ssrf-with-whitelist-filter)
+
+#### Solución:
+
+Al entrar en los detalles de algún producto y pulsar Check Stock, interceptando con burpsuite y mandando la petición al repeater, al cambiar el valor de stockApi por http://127.0.0.1/, obtenemos un status 400 con el mensaje "External stock check host must be stock.weliketoshop.net".
+Cambiamos la URL a http://nombredeusuario@stock.weliketoshop.net/ y observamos que acepta.
+Al agregar # al nombre de usuario, la URL es rechazada. Ofuscando el # como %2523 lo acepta, es decir, si cambiamos la url por:
+http://localhost:80%2523@stock.weliketoshop.net/admin/
+Accedemos al panel de administración, de donde podemos obtener la url para eliminar usuarios, la cual es:
+http://localhost:80%2523@stock.weliketoshop.net/admin/delete?username=carlos
+
 ---
 
 ## [HTTP request smuggling](https://portswigger.net/web-security/request-smuggling)
