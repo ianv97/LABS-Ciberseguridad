@@ -1177,6 +1177,16 @@ ce7yt92pn5jo8evzdf6hpmi144g0e9zd
 
 k67lsge9ztl9117fcefl
 
+### [Server-side template injection with a custom exploit](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-with-a-custom-exploit)
+
+#### Solución:
+
+1. Iniciar sesión con las credenciales brindadas (wiener:peter), ir a My account y modificar el nombre que se muestra en los comentarios de los post
+2. Modificar y enviar dicha request seteando blog-post-author-display=user.setAvatar('/home/carlos/.ssh/id_rsa','image/jpg')
+3. Realizar un comentario en cualqueir post y volver a dicho post para visualizar el comentario, ejecutando así el template injection y cargando como avatar el archivo a eliminar
+4. Modificar y enviar la request del paso 2 seteando blog-post-author-display=user.gdprDelete()
+5. Actualizar la página del post, ejecutando nuevamente el template injection y eliminando así el avatar (es decir, el archivo objetivo)
+
 ## [Directory traversal](https://portswigger.net/web-security/file-path-traversal)
 
 ### [File path traversal, simple case](https://portswigger.net/web-security/file-path-traversal/lab-simple)
