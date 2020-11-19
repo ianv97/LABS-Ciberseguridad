@@ -1847,3 +1847,9 @@ Para resolver este lab se debe:
 ---
 
 ## [HTTP Host header attacks](https://portswigger.net/web-security/host-header)
+
+### [Basic password reset poisoning](https://portswigger.net/web-security/host-header/exploiting/password-reset-poisoning/lab-host-header-basic-password-reset-poisoning)
+
+Para resolver este laboratorio, se debe analizar la funcionalidad "Forgot password?" de la sección Login. Al hacer click en el mismo, si vamos al exploit server y luego hacemos click en Email Client nos aparecerá un mail con una url para restablecer la contraseña de la cuenta con la que nos autenticamos (wiener). Al analizar esta url se observa que la misma contiene un token.
+En el HTTP History de burpsuite, buscamos el POST de "/forgot-password" y lo mandamos al repeater. Analizamos la petición probando distintos host, notando que la respuesta sigue siendo con status 200. Aprovechando esto, cambiamos el host header al dominio del exploit server del laboratorio, y cambiamos el parametro username a "carlos".
+Yendo al exploit server, y buscando por "/forgot-password", vemos que tiene un token como parámetro, el cual vamos a meter en la url del correo recibido en primera instancia al clickear sobre Forgot password, y visitando esta página en el navegador y cambiando la contraseña de carlos por una nueva, para luego autenticarse con la misma, el laboratorio queda resuelto.
