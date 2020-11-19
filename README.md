@@ -1863,3 +1863,11 @@ Similar al laboratorio anterior, pero ahora al cambiar el host header del POST e
     ```
 
 Donde la URL es la dirección del exploit server. En el parámetro username del csrf de la petición lo cambiamos por carlos, y luego de enviarlo vamos a ver los logs del explit server buscando "password" (aparecerá el texto que nos llegó en el mail en primera instancia al hacer click en forgot password), copiamos el string que le sigue a esta palabra, el cual es la contraseña del usuario carlos, y nos logueamos con la misma.
+
+### [Web cache poisoning via ambiguous requests](https://portswigger.net/web-security/host-header/exploiting/lab-host-header-web-cache-poisoning-via-ambiguous-requests)
+
+Para resolver este laboratorio, analizamos el GET que se hace al entrar al laboratorio, lo mandamos al repeater, y probamos enviar peticiones prestando atención en los headers X-Cache y Cache-Control. Al agregar un parámetro arbitrario a la request "limpiamos caché" y obtenemos una nueva respuesta del servidor.
+Probando agregar un segundo header para el host, se puede ver en el body de la respuesta que este se refleja en la url /resources/js/tracking.js.
+Lo siguiente es el ir al exploit server y en el input file ponemos /resources/js/tracking.js, y en el body el alert con el document.cookie.
+En el segundo host header en el repetidor ponemos la url del exploit server.
+Enviamos la request y repetimos el proceso limpiando "destructores de caché" (los parámetros arbitrarios que agregamos para obtener una respuesta del servidor) y actualizando la página de inicio hasta que el laboratorio se marque como solved.
