@@ -15,11 +15,9 @@
 11. [Directory traversal](#directory-traversal)
 12. [Access control vulnerabilities](#access-control-vulnerabilities)
 13. [Authentication](#authentication)
-14. [WebSockets](#webSockets)
-15. [Insecure deserialization](#insecure-deserialization)
-16. [Information disclosure](#information-disclosure)
-17. [Business logic vulnerabilities](#business-logic-vulnerabilities)
-18. [HTTP Host header attacks](#http-host-header-attacks)
+15. [Information disclosure](#information-disclosure)
+16. [Business logic vulnerabilities](#business-logic-vulnerabilities)
+17. [HTTP Host header attacks](#http-host-header-attacks)
 
 ---
 
@@ -1782,14 +1780,6 @@ La funcionalidad de cambio de contraseña especifica en la request el usuario qu
 
 - Username: carlos
 - Password: starwars
-
----
-
-## [WebSockets](https://portswigger.net/web-security/websockets)
-
----
-
-## [Insecure deserialization](https://portswigger.net/web-security/deserialization)
 
 ---
 
