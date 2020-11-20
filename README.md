@@ -8,19 +8,18 @@
 4. [Clickjacking](#clickjacking)
 5. [DOM-based vulnerabilities](#dom-based-vulnerabilities)
 6. [Cross-origin resource sharing (CORS)](<#cross-origin-resource sharing-(cors)>)
-7. [XML external entity (XXE) injection](<#xml-external-entity-(xxe)-injection>)
-8. [Server-side request forgery (SSRF)](<#server-side request-forgery-(ssrf)>)
-9. [HTTP request smuggling](#http-request-smuggling)
-10. [OS command injection](#os-command-injection)
-11. [Server-side template injection](#server-side-template-injection)
-12. [Directory traversal](#directory-traversal)
-13. [Access control vulnerabilities](#access-control-vulnerabilities)
-14. [Authentication](#authentication)
-15. [WebSockets](#webSockets)
-16. [Insecure deserialization](#insecure-deserialization)
-17. [Information disclosure](#information-disclosure)
-18. [Business logic vulnerabilities](#business-logic-vulnerabilities)
-19. [HTTP Host header attacks](#http-host-header-attacks)
+7. [Server-side request forgery (SSRF)](<#server-side request-forgery-(ssrf)>)
+8. [HTTP request smuggling](#http-request-smuggling)
+9. [OS command injection](#os-command-injection)
+10. [Server-side template injection](#server-side-template-injection)
+11. [Directory traversal](#directory-traversal)
+12. [Access control vulnerabilities](#access-control-vulnerabilities)
+13. [Authentication](#authentication)
+14. [WebSockets](#webSockets)
+15. [Insecure deserialization](#insecure-deserialization)
+16. [Information disclosure](#information-disclosure)
+17. [Business logic vulnerabilities](#business-logic-vulnerabilities)
+18. [HTTP Host header attacks](#http-host-header-attacks)
 
 ---
 
@@ -854,10 +853,6 @@ Para resolver el laboratorio, en el siguiente script deberemos pegar la url del 
 ### [CORS vulnerability with internal network pivot attack](https://portswigger.net/web-security/cors/lab-internal-network-pivot-attack)
 
 No pudimos resolver el laboratorio porque se requiere usar el Burp Collaborator Client, que sólo están disponibles en la versión Pro de Burp Suite.
-
----
-
-## [XML external entity (XXE) injection](https://portswigger.net/web-security/xxe)
 
 ---
 
