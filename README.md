@@ -4,11 +4,11 @@
 
 1. [SQL Injection](#sql-injection)
 2. [Cross-site scripting](#cross-site-scripting)
-3. [Cross-site request forgery (CSRF)](<#cross-site-request-forgery-(csrf)>)
+3. [Cross-site request forgery](<#cross-site-request-forgery>)
 4. [Clickjacking](#clickjacking)
 5. [DOM-based vulnerabilities](#dom-based-vulnerabilities)
-6. [Cross-origin resource sharing (CORS)](<#cross-origin-resource sharing-(cors)>)
-7. [Server-side request forgery (SSRF)](<#server-side request-forgery-(ssrf)>)
+6. [Cross-origin resource sharing](<#cross-origin-resource-sharing>)
+7. [Server-side request forgery](<#server-side-request-forgery>)
 8. [HTTP request smuggling](#http-request-smuggling)
 9. [OS command injection](#os-command-injection)
 10. [Server-side template injection](#server-side-template-injection)
@@ -379,7 +379,7 @@ javascript:alert("1337")
 
 ---
 
-## [Cross-site request forgery (CSRF)](https://portswigger.net/web-security/csrf)
+## [Cross-site request forgery](https://portswigger.net/web-security/csrf)
 
 ### [CSRF vulnerability with no defenses](https://portswigger.net/web-security/csrf/lab-no-defenses)
 
@@ -793,7 +793,7 @@ Cuando se carga el `iframe`, después de medio segundo (para que se cargue el co
 
 ---
 
-## [Cross-origin resource sharing (CORS)](https://portswigger.net/web-security/cors)
+## [Cross-origin resource sharing](https://portswigger.net/web-security/cors)
 
 ### [CORS vulnerability with basic origin reflection](https://portswigger.net/web-security/cors/lab-basic-origin-reflection-attack)
 
@@ -854,7 +854,7 @@ No pudimos resolver el laboratorio porque se requiere usar el Burp Collaborator 
 
 ---
 
-## [Server-side request forgery (SSRF)](https://portswigger.net/web-security/ssrf)
+## [Server-side request forgery](https://portswigger.net/web-security/ssrf)
 
 ### [Basic SSRF against the local server](https://portswigger.net/web-security/ssrf/lab-basic-ssrf-against-localhost)
 
