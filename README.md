@@ -428,6 +428,25 @@ Al autenticarse y hacer click en Update Email con el interceptor de burp activad
 </script>
 ```
 
+### [CSRF where token is not tied to user session](https://portswigger.net/web-security/csrf/lab-token-not-tied-to-user-session)
+
+Elegimos una de las credenciales que da el laboratorio, nos autenticamos, y vamos a la sección Change email. Escribimos un email en el input y con el interceptor de burp activo hacemos click en Update email, copiamos el csrf de la petición interceptada y la droppeamos.
+Abrimos el laboratorio en una ventana de incógnito (copiar y pegar la misma url que la del laboratorio en marcha) y nos autenticamos con las otras credenciales provistas. Repetimos el procedimiento de la sección Change email con este usuario, pero ahora mandamos la petición interceptada al repeater. En el parámetro csrf de esta petición, pegamos el csrf que copiamos de la petición del usuario anterior, y vemos que al enviarla la request es aceptada.
+
+#### Solución:
+
+Para resolver este laboratorio, completar lo siguiente con la url del mismo, y en el value del input correspondiente al csrf pegamos el token del otro usuario.
+
+```html
+<form method="POST" action="https://ac201f8c1ff939c1805b0eba00ae0017.web-security-academy.net/email/change-email">
+     <input type="hidden" name="email" value="alguien@algo.com">
+     <input type="hidden" name="csrf" value="pqQ4gmnNBtEPeGsFqDubfOTdqNEzhl7E">
+</form>
+<script>
+      document.forms[0].submit();
+</script>
+```
+
 ---
 
 ## [Clickjacking](https://portswigger.net/web-security/clickjacking)
